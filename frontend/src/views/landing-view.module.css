@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: radial-gradient(circle at top, rgba(75, 140, 255, 0.2), transparent 60%), #040608;
+}
+
+.heroCard {
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(2.5rem, 4vw, 4rem);
+  max-width: 640px;
+  border-radius: 24px;
+  background: rgba(9, 12, 22, 0.86);
+  box-shadow: 0 28px 64px rgba(4, 6, 8, 0.6);
+  border: 1px solid rgba(75, 140, 255, 0.25);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: #f2f5ff;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #c7d4f5;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #07111f;
+  background: linear-gradient(120deg, #5ddb9a, #4b8cff);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(75, 140, 255, 0.4);
+}
+
+@media (max-width: 640px) {
+  .heroCard {
+    border-radius: 20px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+}

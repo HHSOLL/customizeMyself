@@ -1,0 +1,113 @@
+.wrapper {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1.5rem, 6vw, 3rem);
+  background:
+    radial-gradient(circle at top right, rgba(93, 219, 154, 0.18), transparent 60%), #05070e;
+  color: #f5f7fb;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.header p {
+  margin: 0.35rem 0 0;
+  color: #b9c7ea;
+}
+
+.resetBtn {
+  border: 1px solid rgba(75, 140, 255, 0.6);
+  background: transparent;
+  color: #c8d6ff;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 140, 255, 0.18);
+  background: rgba(9, 12, 22, 0.82);
+  color: inherit;
+  text-align: left;
+  transition:
+    border 0.2s ease,
+    transform 0.2s ease;
+}
+
+.progressStep:hover {
+  transform: translateY(-2px);
+}
+
+.stepIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: rgba(75, 140, 255, 0.3);
+}
+
+.done {
+  border-color: rgba(93, 219, 154, 0.6);
+}
+
+.done .stepIndex {
+  background: rgba(93, 219, 154, 0.7);
+}
+
+.active {
+  border-color: rgba(75, 140, 255, 0.65);
+  box-shadow: 0 0 0 1px rgba(75, 140, 255, 0.25);
+}
+
+.content {
+  background: rgba(6, 9, 16, 0.85);
+  border-radius: 28px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(75, 140, 255, 0.18);
+  min-height: 480px;
+}
+
+@media (max-width: 960px) {
+  .progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .progressStep {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .stepIndex {
+    margin-right: 0.6rem;
+  }
+}
