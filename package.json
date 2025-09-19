@@ -1,0 +1,37 @@
+{
+  "name": "customizemyself",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo for the customizeMyself MVP spanning a Vite-based PWA frontend and a NestJS backend API.",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "npm run dev --workspace frontend",
+    "dev:backend": "npm run start:dev --workspace backend",
+    "preview": "npm run preview --workspace frontend",
+    "build": "npm run --workspaces --if-present build",
+    "start": "npm run start --workspace backend",
+    "lint": "npm run --workspaces --if-present lint",
+    "format": "npm run --workspaces --if-present format",
+    "test": "npm run --workspaces --if-present test",
+    "test:backend:e2e": "npm run test:e2e --workspace backend",
+    "prepare": "husky",
+    "typecheck": "npm run --workspaces --if-present typecheck",
+    "check": "npm run lint && npm run typecheck && npm run test"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "prettier": "^3.6.2"
+  }
+}

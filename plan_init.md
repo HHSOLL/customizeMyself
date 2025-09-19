@@ -1,6 +1,7 @@
 github URL: https://github.com/HHSOLL/customizeMyself.git
+Username : HHSOLL
+Token : (provide via local environment variable GITHUB_TOKEN)
 소스코드를 추가/수정/삭제 시 반드시 위 깃허브 레포지토리에 add -> commit -> push한다.
-
 
 # 3D 온라인 피팅 앱 — MVP PRD & Tech Spec (v0.1)
 
@@ -10,9 +11,9 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ## 0. 비전 & 목표
 
-* **비전**: 누구나 자신의 신체 치수로 3D 마네킹을 생성하여, 오픈소스 의상을 입혀보는 **경량·실시간 피팅** 경험을 제공한다.
-* **MVP 목표**: 수기 치수 입력, 성별 구분, 체형 프리셋+슬라이더, 마네킹 실시간 생성/업데이트, 의상(상/하의) 착용·벗기기, 물리 수준 토글(근사/간이물리), 결과 스냅샷 저장.
-* **제약**: 팀=1명(개발자). AI 에이전트를 적극 활용하여 코드/자산 파이프라인 자동화.
+- **비전**: 누구나 자신의 신체 치수로 3D 마네킹을 생성하여, 오픈소스 의상을 입혀보는 **경량·실시간 피팅** 경험을 제공한다.
+- **MVP 목표**: 수기 치수 입력, 성별 구분, 체형 프리셋+슬라이더, 마네킹 실시간 생성/업데이트, 의상(상/하의) 착용·벗기기, 물리 수준 토글(근사/간이물리), 결과 스냅샷 저장.
+- **제약**: 팀=1명(개발자). AI 에이전트를 적극 활용하여 코드/자산 파이프라인 자동화.
 
 ---
 
@@ -31,16 +32,16 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ### 1.2 제외(추후)
 
-* 포즈 변경, 헤어/얼굴 커스터마이징, 레이어링(아우터 포함), 코디 추천, 사이즈 추천 ML, SNS 공유, 계정/클라우드 동기화.
+- 포즈 변경, 헤어/얼굴 커스터마이징, 레이어링(아우터 포함), 코디 추천, 사이즈 추천 ML, SNS 공유, 계정/클라우드 동기화.
 
 ---
 
 ## 2. 사용자 스토리
 
-* **U1**: 나는 내 치수를 입력하고(혹은 프리셋 선택 후 미조정), 즉시 3D 마네킹을 본다.
-* **U2**: 카탈로그에서 상의를 선택하면 마네킹에 즉시 입혀진다. 마음에 들지 않으면 벗긴다.
-* **U3**: 물리 옵션을 켜서 주름·처짐을 간단히 확인한다. 느리면 자동으로 근사 모드로 전환된다.
-* **U4**: 결과 화면을 저장한다(png).
+- **U1**: 나는 내 치수를 입력하고(혹은 프리셋 선택 후 미조정), 즉시 3D 마네킹을 본다.
+- **U2**: 카탈로그에서 상의를 선택하면 마네킹에 즉시 입혀진다. 마음에 들지 않으면 벗긴다.
+- **U3**: 물리 옵션을 켜서 주름·처짐을 간단히 확인한다. 느리면 자동으로 근사 모드로 전환된다.
+- **U4**: 결과 화면을 저장한다(png).
 
 ---
 
@@ -56,33 +57,33 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ## 4. 기능 요구사항(Functional)
 
-* **F-01 치수 입력**: 유효성 검사(cm; 최소/최대 범위). 성별별 합리적 기본값.
-* **F-02 프리셋**: (남/여 각 3종) 프리셋 클릭 시 치수 일괄 세팅.
-* **F-03 마네킹 생성**: 입력값→파라미터→블렌드셰이프/본스케일 계산→glTF 마네킹 업데이트까지 150ms 이내 목표.
-* **F-04 의상 로드**: glTF 2.0 의상 자산 로드, 바인딩 데이터(앵커) 읽기.
-* **F-05 피팅 래핑(L0)**: 최근접-표면 래핑 + 카테고리별 앵커 구속(어깨/허리/엉덩이/인심/목 등) + 교차 최소화.
-* **F-06 간이 물리(L1)**: WebGL2 기반 PBD(소수 프레임 스텝, 15\~30Hz), 충돌=간소화(바운딩 SDF/스피어-트리), 자가충돌 미지원.
-* **F-07 자동 강등**: 프레임률<24FPS 지속 시 L1→L0 자동 전환.
-* **F-08 스냅샷**: 캔버스 toDataURL 저장.
-* **F-09 로컬 세션 저장**: 최근 치수/최종 착장 로컬스토리지 보관(옵트아웃 가능).
+- **F-01 치수 입력**: 유효성 검사(cm; 최소/최대 범위). 성별별 합리적 기본값.
+- **F-02 프리셋**: (남/여 각 3종) 프리셋 클릭 시 치수 일괄 세팅.
+- **F-03 마네킹 생성**: 입력값→파라미터→블렌드셰이프/본스케일 계산→glTF 마네킹 업데이트까지 150ms 이내 목표.
+- **F-04 의상 로드**: glTF 2.0 의상 자산 로드, 바인딩 데이터(앵커) 읽기.
+- **F-05 피팅 래핑(L0)**: 최근접-표면 래핑 + 카테고리별 앵커 구속(어깨/허리/엉덩이/인심/목 등) + 교차 최소화.
+- **F-06 간이 물리(L1)**: WebGL2 기반 PBD(소수 프레임 스텝, 15\~30Hz), 충돌=간소화(바운딩 SDF/스피어-트리), 자가충돌 미지원.
+- **F-07 자동 강등**: 프레임률<24FPS 지속 시 L1→L0 자동 전환.
+- **F-08 스냅샷**: 캔버스 toDataURL 저장.
+- **F-09 로컬 세션 저장**: 최근 치수/최종 착장 로컬스토리지 보관(옵트아웃 가능).
 
 ---
 
 ## 5. 비기능 요구사항(Non-Functional)
 
-* **성능**: 중급 모바일 기기에서 30FPS 목표(L0). L1은 15\~30FPS.
-* **호환**: Chrome/Safari/Edge 최신 2버전, iOS 15+, Android 11+.
-* **보안/개인정보**: 치수 데이터는 로컬 우선. 서버 저장 시 전송(TLS)/저장(AES-256) 암호화. 삭제 기능 제공.
-* **접근성**: 키보드 포커스, 대비 준수. 텍스트는 한국어.
+- **성능**: 중급 모바일 기기에서 30FPS 목표(L0). L1은 15\~30FPS.
+- **호환**: Chrome/Safari/Edge 최신 2버전, iOS 15+, Android 11+.
+- **보안/개인정보**: 치수 데이터는 로컬 우선. 서버 저장 시 전송(TLS)/저장(AES-256) 암호화. 삭제 기능 제공.
+- **접근성**: 키보드 포커스, 대비 준수. 텍스트는 한국어.
 
 ---
 
 ## 6. 아키텍처 개요
 
-* **프론트엔드**: React + Three.js(WebGL2), Zustand(Recoil) 상태, Vite 번들. PWA. 모바일 앱은 **Capacitor** 래핑.
-* **백엔드**: Node.js(NestJS) REST API. 비동기 작업(자산 변환/검증)용 워커(큐: Bull/Redis).
-* **데이터베이스**: PostgreSQL(메타/로그), Redis(캐시/큐). 오브젝트 스토리지: S3(의상/마네킹 glTF/텍스처).
-* **분석/로그**: GA4(이벤트), Sentry(에러). 서버 로그는 JSON(ELK 옵션).
+- **프론트엔드**: React + Three.js(WebGL2), Zustand(Recoil) 상태, Vite 번들. PWA. 모바일 앱은 **Capacitor** 래핑.
+- **백엔드**: Node.js(NestJS) REST API. 비동기 작업(자산 변환/검증)용 워커(큐: Bull/Redis).
+- **데이터베이스**: PostgreSQL(메타/로그), Redis(캐시/큐). 오브젝트 스토리지: S3(의상/마네킹 glTF/텍스처).
+- **분석/로그**: GA4(이벤트), Sentry(에러). 서버 로그는 JSON(ELK 옵션).
 
 ---
 
@@ -115,8 +116,8 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
   "id": "uuid",
   "measurement_id": "uuid",
   "preset": "slim|standard|muscular",
-  "morph_params": {"shoulder": 0.2, "waist": -0.1, "hip": 0.0, "limb_scale": 0.05},
-  "skeleton_scale": {"arm": 1.02, "leg": 1.03, "torso": 0.98},
+  "morph_params": { "shoulder": 0.2, "waist": -0.1, "hip": 0.0, "limb_scale": 0.05 },
+  "skeleton_scale": { "arm": 1.02, "leg": 1.03, "torso": 0.98 },
   "physics_level": "L0|L1",
   "created_at": "2025-09-20T12:00:10Z"
 }
@@ -131,7 +132,13 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
   "category": "top|bottom",
   "gltf_url": "s3://.../garments/tshirt.gltf",
   "license": "CC0|CCBY",
-  "anchors": {"shoulder": ["L","R"], "waist": ["center"], "hip": ["L","R"], "inseam": ["L","R"], "neck": ["base"]},
+  "anchors": {
+    "shoulder": ["L", "R"],
+    "waist": ["center"],
+    "hip": ["L", "R"],
+    "inseam": ["L", "R"],
+    "neck": ["base"]
+  },
   "author": "opensource",
   "polycount": 12000,
   "created_at": "2025-09-20T12:00:20Z"
@@ -156,11 +163,11 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ## 8. API 명세 (요약)
 
-* `POST /api/measurements` — Measurements 생성(서버 저장 선택형). 응답: `measurement_id`.
-* `POST /api/avatar` — `measurement_id` + `preset` + `morph_params`로 AvatarConfig 생성. 응답: `avatar_id` + 계산된 파라미터.
-* `GET /api/garments?category=top|bottom` — 카탈로그 조회.
-* `POST /api/fitting` — `avatar_id` + `garment_ids` + `physics_level` → 세션 생성(로깅용). 응답: OK.
-* `POST /api/snapshot` — 업로드 URL 발급 후 업로드 완료 콜백.
+- `POST /api/measurements` — Measurements 생성(서버 저장 선택형). 응답: `measurement_id`.
+- `POST /api/avatar` — `measurement_id` + `preset` + `morph_params`로 AvatarConfig 생성. 응답: `avatar_id` + 계산된 파라미터.
+- `GET /api/garments?category=top|bottom` — 카탈로그 조회.
+- `POST /api/fitting` — `avatar_id` + `garment_ids` + `physics_level` → 세션 생성(로깅용). 응답: OK.
+- `POST /api/snapshot` — 업로드 URL 발급 후 업로드 완료 콜백.
 
 > **주의**: MVP는 **로컬 우선** 동작 가능. 서버 API는 로깅/배포 대비이며, 완전 오프라인 모드도 허용.
 
@@ -179,14 +186,14 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ## 10. 마네킹(Avatar) 설계
 
-* **ParamBody v0**: CC0급 베이스 매시(남/여 각 1종) + 스켈레톤(표준 휴머노이드) + 블렌드셰이프(가슴/허리/엉덩이/견폭/팔·다리 길이 대응).
-* **파라미터 매핑**:
+- **ParamBody v0**: CC0급 베이스 매시(남/여 각 1종) + 스켈레톤(표준 휴머노이드) + 블렌드셰이프(가슴/허리/엉덩이/견폭/팔·다리 길이 대응).
+- **파라미터 매핑**:
+  - 키→전신 스케일(Y) 및 사지 분배(다리:팔 비율 고정 계수).
+  - 어깨너비→양쪽 쇄골 관절 간 거리 + 상체 상부 폭 블렌드.
+  - 가슴/허리/엉덩이 둘레→해당 부위 환경 스케일 + 국소 블렌드셰이프.
+  - 팔/다리 길이→본 길이 스케일.
 
-  * 키→전신 스케일(Y) 및 사지 분배(다리:팔 비율 고정 계수).
-  * 어깨너비→양쪽 쇄골 관절 간 거리 + 상체 상부 폭 블렌드.
-  * 가슴/허리/엉덩이 둘레→해당 부위 환경 스케일 + 국소 블렌드셰이프.
-  * 팔/다리 길이→본 길이 스케일.
-* **성별 구분**: 베이스 메시 분리(남/여), 파라미터 범위 표 별도.
+- **성별 구분**: 베이스 메시 분리(남/여), 파라미터 범위 표 별도.
 
 ---
 
@@ -194,16 +201,16 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ### 11.1 L0: 근사 래핑
 
-* **방법**: 최근접 표면 전개 + 카테고리별 앵커 고정(목/어깨/허리/엉덩이/인심).
-* **충돌 감소**: 바디 SDF 근사(멀티 스피어)로 페널티 오프셋.
-* **단계**: (1) 앵커 정합 → (2) 라플라시안 보정(ARAP) → (3) 교차 포스트 픽스(법선 방향 밀어내기).
+- **방법**: 최근접 표면 전개 + 카테고리별 앵커 고정(목/어깨/허리/엉덩이/인심).
+- **충돌 감소**: 바디 SDF 근사(멀티 스피어)로 페널티 오프셋.
+- **단계**: (1) 앵커 정합 → (2) 라플라시안 보정(ARAP) → (3) 교차 포스트 픽스(법선 방향 밀어내기).
 
 ### 11.2 L1: 간이 물리(PBD)
 
-* **입자화**: 의상 버텍스 간 에지로 거리 제약, 굽힘 제약 소량.
-* **중력/감쇠**: 경량 값.
-* **충돌**: 바디=스피어/캡슐 트리, 관통 시 투영.
-* **스텝**: 1\~2 서브스텝/프레임, 3\~5 반복. 프레임률 저하 시 스텝 축소.
+- **입자화**: 의상 버텍스 간 에지로 거리 제약, 굽힘 제약 소량.
+- **중력/감쇠**: 경량 값.
+- **충돌**: 바디=스피어/캡슐 트리, 관통 시 투영.
+- **스텝**: 1\~2 서브스텝/프레임, 3\~5 반복. 프레임률 저하 시 스텝 축소.
 
 **자동 강등 규칙**: 3초간 FPS<24 → L0로 전환. 사용자가 원하면 재승격.
 
@@ -211,67 +218,67 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ## 12. 성능/품질 가이드
 
-* 총 폴리: 마네킹 ≤ 40k, 의상 ≤ 15k(상), 15k(하).
-* 텍스처: 1\~2K, 압축(KTX2/ETC/ASTC) 우선.
-* 드로콜: 100 이하.
-* 메모리: 모바일 512MB 예산 내.
+- 총 폴리: 마네킹 ≤ 40k, 의상 ≤ 15k(상), 15k(하).
+- 텍스처: 1\~2K, 압축(KTX2/ETC/ASTC) 우선.
+- 드로콜: 100 이하.
+- 메모리: 모바일 512MB 예산 내.
 
 ---
 
 ## 13. 보안·개인정보·법률
 
-* **데이터 최소화**: 사진 미사용. 치수만(선택적 서버 저장).
-* **익명 세션**: 세션ID=UUID.
-* **암호화**: TLS 1.2+, 서버 저장 시 KMS로 AES-256.
-* **삭제권**: 로컬/서버 삭제 UI 제공.
-* **고지**: 실제 착용과 차이 가능성 명시(면책).
+- **데이터 최소화**: 사진 미사용. 치수만(선택적 서버 저장).
+- **익명 세션**: 세션ID=UUID.
+- **암호화**: TLS 1.2+, 서버 저장 시 KMS로 AES-256.
+- **삭제권**: 로컬/서버 삭제 UI 제공.
+- **고지**: 실제 착용과 차이 가능성 명시(면책).
 
 ---
 
 ## 14. 테스트 계획
 
-* **단위**: 파라미터→메시 스케일/블렌드 일관성 검증.
-* **시나리오**: (S1) 치수 엣지(최대/최소) (S2) 의상 교체 반복 50회 (S3) 물리 토글 반복 (S4) 모바일 저전력 모드.
-* **성능 측정**: 평균 FPS, GC 스파이크, CPU/GPU 시간.
+- **단위**: 파라미터→메시 스케일/블렌드 일관성 검증.
+- **시나리오**: (S1) 치수 엣지(최대/최소) (S2) 의상 교체 반복 50회 (S3) 물리 토글 반복 (S4) 모바일 저전력 모드.
+- **성능 측정**: 평균 FPS, GC 스파이크, CPU/GPU 시간.
 
 ---
 
 ## 15. KPI(초안)
 
-* TTFU(First Fitting까지 시간) ≤ 60초.
-* 1세션 평균 착장 수 ≥ 4.
-* L1 사용 비율 ≥ 30% (성능 허용 시).
+- TTFU(First Fitting까지 시간) ≤ 60초.
+- 1세션 평균 착장 수 ≥ 4.
+- L1 사용 비율 ≥ 30% (성능 허용 시).
 
 ---
 
 ## 16. 배포/운영
 
-* **CI/CD**: GitHub Actions—프론트 빌드/테스트/배포(S3+CloudFront), 백엔드(ECS/Fargate).
-* **버전**: `mvp-0.x`.
-* **피처 플래그**: 물리 L1, 저사양 강등.
+- **CI/CD**: GitHub Actions—프론트 빌드/테스트/배포(S3+CloudFront), 백엔드(ECS/Fargate).
+- **버전**: `mvp-0.x`.
+- **피처 플래그**: 물리 L1, 저사양 강등.
 
 ---
 
 ## 17. 모바일 앱 래핑
 
-* **Capacitor**로 iOS/Android 패키징.
-* 네이티브 권한 불요. 스플래시/아이콘/앱 서명만 구성.
+- **Capacitor**로 iOS/Android 패키징.
+- 네이티브 권한 불요. 스플래시/아이콘/앱 서명만 구성.
 
 ---
 
 ## 18. 리스크 & 대응
 
-* **의상-바디 교차**: 앵커 압축/확장 계수 자동 조정, 포스트픽스 강도 가변.
-* **물리 성능 저하**: 자동 강등 + LOD 메시 교체.
-* **오픈소스 라이선스**: CC0/CC BY만 허용, 메타 저장·감사 로그.
+- **의상-바디 교차**: 앵커 압축/확장 계수 자동 조정, 포스트픽스 강도 가변.
+- **물리 성능 저하**: 자동 강등 + LOD 메시 교체.
+- **오픈소스 라이선스**: CC0/CC BY만 허용, 메타 저장·감사 로그.
 
 ---
 
 ## 19. 확장 로드맵(요약)
 
-* v0.2: 포즈 프리셋, 상·하+아우터 레이어링.
-* v0.3: 색상/패턴 바리에이션, 룩북 저장.
-* v0.4: 사진 기반 치수 추정(옵션), 간단 사이즈 추천.
+- v0.2: 포즈 프리셋, 상·하+아우터 레이어링.
+- v0.3: 색상/패턴 바리에이션, 룩북 저장.
+- v0.4: 사진 기반 치수 추정(옵션), 간단 사이즈 추천.
 
 ---
 
@@ -279,14 +286,14 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ### 20.1 저장소 스캐폴딩
 
-* **프론트엔드**: `create-vite react-ts`, `three`, `@react-three/fiber`, `@react-three/drei`, `zustand`, `valtio` 중 택1, `glTF` 로더 포함. PWA 설정(Service Worker, manifest).
-* **백엔드**: `NestJS` + `Prisma(Postgres)` + `BullMQ(Redis)` + `S3 SDK`.
-* **공통**: ESLint/Prettier, Husky+lint-staged, Commitlint.
+- **프론트엔드**: `create-vite react-ts`, `three`, `@react-three/fiber`, `@react-three/drei`, `zustand`, `valtio` 중 택1, `glTF` 로더 포함. PWA 설정(Service Worker, manifest).
+- **백엔드**: `NestJS` + `Prisma(Postgres)` + `BullMQ(Redis)` + `S3 SDK`.
+- **공통**: ESLint/Prettier, Husky+lint-staged, Commitlint.
 
 ### 20.2 마네킹 구현
 
 1. `assets/avatar/base_male.glb`, `base_female.glb`(CC0급 임시 메시에 본/블렌드셰이프 추가).
-2. `src/engine/avatar/paramMap.ts`: Measurements→(morph\_params, skeleton\_scale) 매핑 함수.
+2. `src/engine/avatar/paramMap.ts`: Measurements→(morph_params, skeleton_scale) 매핑 함수.
 3. `applyAvatarParams(mesh, params)`: 블렌드/본 스케일 적용 유틸.
 4. 치수 폼(UI)→디바운스(100ms)→`applyAvatarParams`.
 
@@ -298,63 +305,63 @@ github URL: https://github.com/HHSOLL/customizeMyself.git
 
 ### 20.4 피팅 엔진
 
-* `fit/L0.ts`: 앵커 정합→ARAP 보정→노멀 푸시.
-* `fit/L1.ts`: 경량 PBD(거리/굽힘 제약) + 스피어/캡슐 충돌.
-* `fit/autoTier.ts`: FPS 모니터링→티어 전환.
+- `fit/L0.ts`: 앵커 정합→ARAP 보정→노멀 푸시.
+- `fit/L1.ts`: 경량 PBD(거리/굽힘 제약) + 스피어/캡슐 충돌.
+- `fit/autoTier.ts`: FPS 모니터링→티어 전환.
 
 ### 20.5 UI/장면
 
-* 3D 뷰(오비트 컨트롤), 우측 패널(치수 슬라이더, 물리 토글), 하단 카탈로그(썸네일 리스트).
-* 스냅샷 버튼: 캔버스 PNG 다운로드.
+- 3D 뷰(오비트 컨트롤), 우측 패널(치수 슬라이더, 물리 토글), 하단 카탈로그(썸네일 리스트).
+- 스냅샷 버튼: 캔버스 PNG 다운로드.
 
 ### 20.6 백엔드 API
 
-* 엔드포인트 생성(§8). Swagger(OpenAPI) 자동 문서화.
-* S3 프리사인 URL 발급(`/snapshot`).
-* 서버 저장은 옵트인.
+- 엔드포인트 생성(§8). Swagger(OpenAPI) 자동 문서화.
+- S3 프리사인 URL 발급(`/snapshot`).
+- 서버 저장은 옵트인.
 
 ### 20.7 품질 가드
 
-* Lighthouse(성능/접근성) 80+ 목표.
-* E2E(Playwright): U1\~U4 시나리오.
-* 퍼포먼스 로그 수집(FPS, GPU 시간 추정).
+- Lighthouse(성능/접근성) 80+ 목표.
+- E2E(Playwright): U1\~U4 시나리오.
+- 퍼포먼스 로그 수집(FPS, GPU 시간 추정).
 
 ---
 
 ## 21. 수용 기준(Acceptance Criteria)
 
-* A1: 사용자는 성별/프리셋 선택 후 \*\*치수 입력→"마네킹 생성"\*\*을 눌러 1초 내 마네킹을 본다.
-* A2: 의상 썸네일을 클릭하면 **0.5초 내** 착용된다.
-* A3: 물리 L1 활성 시 **최소 15FPS** 유지, 미만 시 자동 L0.
-* A4: 스냅샷 저장(.png) 기능 동작.
+- A1: 사용자는 성별/프리셋 선택 후 \*\*치수 입력→"마네킹 생성"\*\*을 눌러 1초 내 마네킹을 본다.
+- A2: 의상 썸네일을 클릭하면 **0.5초 내** 착용된다.
+- A3: 물리 L1 활성 시 **최소 15FPS** 유지, 미만 시 자동 L0.
+- A4: 스냅샷 저장(.png) 기능 동작.
 
 ---
 
 ## 22. 마일스톤(솔로 개발 기준)
 
-* **W1**: 저장소/CI, 기본 씬, UI 스켈레톤, 치수 폼, ParamMap v0.
-* **W2**: 마네킹 블렌드/본 스케일 적용, 프리셋, 스냅샷.
-* **W3**: 자산 파이프라인, 카탈로그, L0 피팅.
-* **W4**: L1 간이 물리, 자동 티어, 성능 튜닝, 테스트/배포.
+- **W1**: 저장소/CI, 기본 씬, UI 스켈레톤, 치수 폼, ParamMap v0.
+- **W2**: 마네킹 블렌드/본 스케일 적용, 프리셋, 스냅샷.
+- **W3**: 자산 파이프라인, 카탈로그, L0 피팅.
+- **W4**: L1 간이 물리, 자동 티어, 성능 튜닝, 테스트/배포.
 
 ---
 
 ## 23. 운영 가이드(간단)
 
-* 오픈소스 의상 추가 시 `tools/convert_gltf`→`tools/add_anchors`→S3 업로드→카탈로그 등록.
-* 라이선스 메타 누락 시 빌드 실패하도록 CI 규칙 추가.
+- 오픈소스 의상 추가 시 `tools/convert_gltf`→`tools/add_anchors`→S3 업로드→카탈로그 등록.
+- 라이선스 메타 누락 시 빌드 실패하도록 CI 규칙 추가.
 
 ---
 
 ### 부록 A. 치수 유효 범위(권장)
 
-* 키: 130–210, 몸무게: 35–150, 어깨: 30–60, 가슴: 70–130, 허리: 55–120, 엉덩이: 75–130, 허벅지: 35–75, 팔길이: 45–75, 인심: 55–95, 목: 28–45.
+- 키: 130–210, 몸무게: 35–150, 어깨: 30–60, 가슴: 70–130, 허리: 55–120, 엉덩이: 75–130, 허벅지: 35–75, 팔길이: 45–75, 인심: 55–95, 목: 28–45.
 
 ### 부록 B. 앵커 키(카테고리별 최소 세트)
 
-* **상의**: neck\_base, shoulder\_L/R, chest\_center, waist\_center.
-* **하의**: waist\_center, hip\_L/R, inseam\_L/R.
+- **상의**: neck_base, shoulder_L/R, chest_center, waist_center.
+- **하의**: waist_center, hip_L/R, inseam_L/R.
 
 ### 부록 C. 이벤트(분석)
 
-* `measure_submit`, `avatar_update`, `garment_try`, `garment_remove`, `physics_toggle`, `snapshot_save`.
+- `measure_submit`, `avatar_update`, `garment_try`, `garment_remove`, `physics_toggle`, `snapshot_save`.
