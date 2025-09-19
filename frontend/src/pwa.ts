@@ -17,7 +17,7 @@ export function enablePWA(): void {
 
     refreshNotified = true;
     if (window.confirm('새로운 버전이 준비되었습니다. 지금 새로고침할까요?')) {
-      updateSW().catch((error) => {
+      updateSW().catch((error: unknown) => {
         console.error('Service worker update failed', error);
       });
     } else {
