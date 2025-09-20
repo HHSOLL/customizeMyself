@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Garment {
+  id         String   @id
+  label      String
+  category   String
+  assetUrl   String
+  anchors    Json
+  license    Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  fits       FitHistory[]
+}
+
+model MeasurementProfile {
+  id          String    @id @default(uuid())
+  gender      String
+  preset      String?
+  data        Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  fits        FitHistory[]
+  snapshots   Snapshot[]
+}
+
+model FitHistory {
+  id             String    @id @default(uuid())
+  tier           String
+  latencyMs      Int
+  details        Json?
+  createdAt      DateTime  @default(now())
+  measurementId  String?
+  garmentId      String?
+  measurement    MeasurementProfile? @relation(fields: [measurementId], references: [id], onDelete: Cascade)
+  garment        Garment?            @relation(fields: [garmentId], references: [id], onDelete: SetNull)
+}
+
+model Snapshot {
+  id             String   @id @default(uuid())
+  imageUrl       String
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  measurementId  String?
+  measurement    MeasurementProfile? @relation(fields: [measurementId], references: [id], onDelete: Cascade)
+}
