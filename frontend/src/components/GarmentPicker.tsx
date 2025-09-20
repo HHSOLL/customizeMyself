@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { JSX } from 'react';
-import { useGarmentCatalog } from '../hooks/useGarmentCatalog';
+import type { GarmentCatalog } from '../data/garments';
 import { useAvatarStore } from '../store/avatar.store';
 import styles from './GarmentPicker.module.css';
 
 interface GarmentPickerProps {
   className?: string;
+  catalog: GarmentCatalog;
+  loading?: boolean;
+  error?: string | null;
 }
 
 type GarmentSection = 'top' | 'bottom' | 'other';
@@ -18,8 +21,12 @@ const sectionLabels: Record<GarmentSection, string> = {
 
 const combineClass = (...values: Array<string | undefined>) => values.filter(Boolean).join(' ');
 
-export function GarmentPicker({ className }: GarmentPickerProps): JSX.Element {
-  const { catalog, loading, error } = useGarmentCatalog();
+export function GarmentPicker({
+  className,
+  catalog,
+  loading,
+  error,
+}: GarmentPickerProps): JSX.Element {
   const selections = useAvatarStore((state) => state.garmentSelections);
   const setSelections = useAvatarStore((state) => state.setGarmentSelections);
 
