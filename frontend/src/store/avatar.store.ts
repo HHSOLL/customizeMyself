@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import {
   type BodyPreset,
   type Gender,
@@ -40,23 +40,30 @@ const defaultMeasurements = (): MeasurementState => {
   return Object.fromEntries(entries) as MeasurementState;
 };
 
-const noopStorage: StateStorage = {
-  getItem: async () => null,
-  setItem: async () => {},
-  removeItem: async () => {},
+const createInMemoryStorage = (): Storage => {
+  const store = new Map<string, string>();
+
+  return {
+    get length() {
+      return store.size;
+    },
+    clear: () => {
+      store.clear();
+    },
+    getItem: (key) => (store.has(key) ? (store.get(key) ?? null) : null),
+    key: (index) => Array.from(store.keys())[index] ?? null,
+    removeItem: (key) => {
+      store.delete(key);
+    },
+    setItem: (key, value) => {
+      store.set(key, value);
+    },
+  } satisfies Storage;
 };
 
-const storage = createJSONStorage(() => {
-  if (typeof window === 'undefined') {
-    return {
-      getItem: () => null,
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    } satisfies Storage;
-  }
-
-  return window.localStorage;
-});
+const storage = createJSONStorage<AvatarState>(() =>
+  typeof window === 'undefined' ? createInMemoryStorage() : window.localStorage,
+);
 
 export const useAvatarStore = create<AvatarState>()(
   persist(
@@ -115,7 +122,7 @@ export const useAvatarStore = create<AvatarState>()(
     {
       name: 'avatar-state-v1',
       version: 1,
-      storage: typeof window === 'undefined' ? noopStorage : storage,
+      storage,
       partialize: (state) => ({
         gender: state.gender,
         preset: state.preset,

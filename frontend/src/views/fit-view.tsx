@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Suspense, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './fit-view.module.css';
 

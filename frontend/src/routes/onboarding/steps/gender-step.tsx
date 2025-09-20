@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GENDER_LABELS, type Gender } from '../../../constants/measurements';
 import { useAvatarStore } from '../../../store/avatar.store';

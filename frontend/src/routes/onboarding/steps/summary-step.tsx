@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type JSX } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GENDER_LABELS, MEASUREMENT_DEFINITIONS, PRESETS } from '../../../constants/measurements';
 import { useAvatarStore } from '../../../store/avatar.store';

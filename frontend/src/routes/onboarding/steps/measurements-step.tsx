@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { type ChangeEvent, type JSX } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { MEASUREMENT_DEFINITIONS, type MeasurementKey } from '../../../constants/measurements';
 import { useAvatarStore } from '../../../store/avatar.store';

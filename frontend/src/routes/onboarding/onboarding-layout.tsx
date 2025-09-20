@@ -1,5 +1,5 @@
+import { useMemo, type JSX } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
 import { useAvatarStore } from '../../store/avatar.store';
 import styles from './onboarding-layout.module.css';
 
