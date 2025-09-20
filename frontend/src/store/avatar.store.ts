@@ -28,6 +28,11 @@ export interface AvatarState {
   resetAll: () => void;
 }
 
+type PersistedAvatarState = Pick<
+  AvatarState,
+  'gender' | 'preset' | 'measurements' | 'physicsTier' | 'garmentSelections'
+>;
+
 const definitionLookup: Record<MeasurementKey, MeasurementDefinition> = Object.fromEntries(
   MEASUREMENT_DEFINITIONS.map((definition) => [definition.key, definition] as const),
 ) as Record<MeasurementKey, MeasurementDefinition>;
@@ -61,12 +66,16 @@ const createInMemoryStorage = (): Storage => {
   } satisfies Storage;
 };
 
-const storage = createJSONStorage<AvatarState>(() =>
+const storage = createJSONStorage<PersistedAvatarState>(() =>
   typeof window === 'undefined' ? createInMemoryStorage() : window.localStorage,
-)!;
+);
+
+if (!storage) {
+  throw new Error('Failed to create avatar persist storage');
+}
 
 export const useAvatarStore = create<AvatarState>()(
-  persist(
+  persist<AvatarState, [], PersistedAvatarState>(
     (set, get) => ({
       gender: null,
       preset: null,
