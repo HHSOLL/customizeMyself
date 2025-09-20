@@ -5,9 +5,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { GarmentsModule } from './garments/garments.module';
 import { MeasurementsModule } from './measurements/measurements.module';
 import { FitHistoryModule } from './fit-history/fit-history.module';
+import { SnapshotsModule } from './snapshots/snapshots.module';
 
 @Module({
-  imports: [PrismaModule, GarmentsModule, MeasurementsModule, FitHistoryModule],
+  imports: [PrismaModule, GarmentsModule, MeasurementsModule, FitHistoryModule, SnapshotsModule],
   controllers: [AppController],
   providers: [AppService],
 })
