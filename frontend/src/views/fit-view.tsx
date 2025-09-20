@@ -1,4 +1,3 @@
-import { Canvas } from '@react-three/fiber';
 import { Suspense, useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './fit-view.module.css';
@@ -9,6 +8,7 @@ import { getGarmentCatalog } from '../data/garments';
 import { useAvatarStore, useFitHistory } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
 import { applyGarmentL1 } from '../engine/fit/L1';
+import { FitScene } from '../components/fitting/fit-scene';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -133,14 +133,9 @@ export function FitView(): JSX.Element {
 
       <main className={styles.stage}>
         <section className={styles.viewer}>
-          <Canvas camera={{ position: [0, 1.6, 3.5], fov: 45 }}>
-            <color attach="background" args={[0.03, 0.05, 0.08]} />
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[4, 6, 2]} intensity={1.2} />
-            <Suspense fallback={null}>
-              <PlaceholderAvatar />
-            </Suspense>
-          </Canvas>
+          <Suspense fallback={<PlaceholderAvatar />}>
+            <FitScene />
+          </Suspense>
         </section>
 
         <aside className={styles.controlPanel}>
