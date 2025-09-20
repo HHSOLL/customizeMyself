@@ -7,6 +7,7 @@ import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvata
 import type { AvatarRig } from '../engine/avatar/types';
 import { getGarmentCatalog } from '../data/garments';
 import { useAvatarStore } from '../store/avatar.store';
+import { applyGarmentL0 } from '../engine/fit/L0';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -23,16 +24,26 @@ export function FitView(): JSX.Element {
   const warnings = useAvatarWarnings();
   const garmentSelections = useAvatarStore((state) => state.garmentSelections);
   const setGarmentSelections = useAvatarStore((state) => state.setGarmentSelections);
+  const physicsTier = useAvatarStore((state) => state.physicsTier);
+  const togglePhysicsTier = useAvatarStore((state) => state.togglePhysicsTier);
 
   const catalog = useMemo(() => getGarmentCatalog(), []);
 
+  const selectedGarments = useMemo(
+    () => catalog.items.filter((item) => garmentSelections.includes(item.id)),
+    [catalog.items, garmentSelections],
+  );
+
   useEffect(() => {
-    if (garmentSelections.length === 0) {
+    if (selectedGarments.length === 0) {
       return;
     }
 
-    console.debug('[Garments] Selected items ->', garmentSelections);
-  }, [garmentSelections]);
+    for (const garment of selectedGarments) {
+      const result = applyGarmentL0(rigRef.current, garment);
+      console.debug('[Garments:L0] result ->', result);
+    }
+  }, [selectedGarments]);
 
   useEffect(() => {
     if (!avatarParams) {
@@ -86,6 +97,12 @@ export function FitView(): JSX.Element {
         <aside className={styles.controlPanel}>
           <h2>치수 & 물리 옵션</h2>
           <p>치수 조정과 물리 레벨(L0/L1) 토글 UI가 여기에 들어갑니다.</p>
+          <div className={styles.physicsCard}>
+            <span>현재 물리 티어: {physicsTier}</span>
+            <button type="button" onClick={togglePhysicsTier} className={styles.linkButton}>
+              물리 티어 전환
+            </button>
+          </div>
           {formattedParams ? (
             <div className={styles.paramCard}>
               <p>
@@ -144,9 +161,16 @@ export function FitView(): JSX.Element {
                 <div className={styles.catalogThumb}>
                   <span>{item.category === 'top' ? '상의' : '하의'}</span>
                 </div>
-                <div>
+                <div className={styles.catalogDetails}>
                   <strong>{item.label}</strong>
                   <p>{item.license.author}</p>
+                  {isSelected ? (
+                    <ul>
+                      {item.anchors.map((anchor) => (
+                        <li key={anchor}>{anchor}</li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </div>
               </button>
             );

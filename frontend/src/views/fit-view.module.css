@@ -58,6 +58,26 @@
   color: #dde5ff;
 }
 
+.linkButton {
+  border: 1px solid rgba(75, 140, 255, 0.5);
+  color: #d5defa;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.physicsCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 140, 255, 0.18);
+  background: rgba(6, 9, 16, 0.9);
+}
+
 .paramCard,
 .warningCard {
   padding: 1rem 1.25rem;
@@ -171,6 +191,13 @@
   margin: 0;
   color: #99a8cc;
   font-size: 0.85rem;
+}
+
+.catalogDetails ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.2rem;
+  color: #aebce0;
+  font-size: 0.8rem;
 }
 
 .catalogThumb {

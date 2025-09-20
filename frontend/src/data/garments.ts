@@ -24,3 +24,6 @@ export interface GarmentCatalog {
 const catalog = catalogJson as GarmentCatalog;
 
 export const getGarmentCatalog = (): GarmentCatalog => catalog;
+
+export const findGarmentById = (id: string): GarmentItem | undefined =>
+  catalog.items.find((item) => item.id === id);
