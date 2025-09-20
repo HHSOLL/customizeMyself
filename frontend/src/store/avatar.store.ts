@@ -13,6 +13,13 @@ export type PhysicsTier = 'L0' | 'L1';
 
 export type MeasurementState = Record<MeasurementKey, number>;
 
+export interface FitHistoryEntry {
+  timestamp: string;
+  garmentId: string;
+  tier: PhysicsTier;
+  message: string;
+}
+
 export interface AvatarState {
   gender: Gender | null;
   preset: BodyPreset | null;
@@ -20,6 +27,7 @@ export interface AvatarState {
   physicsTier: PhysicsTier;
   garmentSelections: string[];
   fitHistory: FitHistoryEntry[];
+  hydrated: boolean;
   setGender: (gender: Gender) => void;
   setPreset: (preset: BodyPreset) => void;
   setMeasurement: (key: MeasurementKey, value: number) => void;
@@ -29,14 +37,8 @@ export interface AvatarState {
   setGarmentSelections: (ids: string[]) => void;
   appendFitHistory: (entry: FitHistoryEntry) => void;
   clearFitHistory: () => void;
+  markHydrated: () => void;
   resetAll: () => void;
-}
-
-export interface FitHistoryEntry {
-  timestamp: string;
-  garmentId: string;
-  tier: PhysicsTier;
-  message: string;
 }
 
 type PersistedAvatarState = Pick<
@@ -81,12 +83,8 @@ const storage = createJSONStorage<PersistedAvatarState>(() =>
   typeof window === 'undefined' ? createInMemoryStorage() : window.localStorage,
 );
 
-if (!storage) {
-  throw new Error('Failed to create avatar persist storage');
-}
-
 export const useAvatarStore = create<AvatarState>()(
-  persist<AvatarState, [], PersistedAvatarState>(
+  persist(
     (set, get) => ({
       gender: null,
       preset: null,
@@ -94,6 +92,7 @@ export const useAvatarStore = create<AvatarState>()(
       physicsTier: 'L0',
       garmentSelections: [],
       fitHistory: [],
+      hydrated: typeof window === 'undefined' ? false : true,
       setGender: (gender) => {
         set({ gender });
         const { preset } = get();
@@ -139,6 +138,7 @@ export const useAvatarStore = create<AvatarState>()(
         }));
       },
       clearFitHistory: () => set({ fitHistory: [] }),
+      markHydrated: () => set({ hydrated: true }),
       resetAll: () => {
         set({
           gender: null,
@@ -147,6 +147,7 @@ export const useAvatarStore = create<AvatarState>()(
           garmentSelections: [],
           physicsTier: 'L0',
           fitHistory: [],
+          hydrated: true,
         });
       },
     }),
@@ -154,24 +155,25 @@ export const useAvatarStore = create<AvatarState>()(
       name: 'avatar-state-v1',
       version: 1,
       storage,
-      partialize: (state) => ({
-        gender: state.gender,
-        preset: state.preset,
-        measurements: state.measurements,
-        physicsTier: state.physicsTier,
-        garmentSelections: state.garmentSelections,
-        fitHistory: state.fitHistory,
-      }),
-      skipHydration: typeof window === 'undefined',
+      partialize: (state) =>
+        ({
+          gender: state.gender,
+          preset: state.preset,
+          measurements: state.measurements,
+          physicsTier: state.physicsTier,
+          garmentSelections: state.garmentSelections,
+          fitHistory: state.fitHistory,
+        }) satisfies PersistedAvatarState,
+      onRehydrateStorage: () => () => {
+        set({ hydrated: true });
+      },
     },
   ),
 );
 
 export const useHydratedAvatarStore = (): AvatarState | null => {
   const state = useAvatarStore();
-  const isServer = typeof window === 'undefined';
-
-  if (isServer || !useAvatarStore.persist.hasHydrated()) {
+  if (!state.hydrated) {
     return null;
   }
 

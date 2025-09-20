@@ -8,6 +8,7 @@ export interface FitResult {
 }
 
 export const applyGarmentL0 = (rig: AvatarRig, garment: GarmentItem): FitResult => {
+  void rig;
   const anchorsUsed = garment.anchors;
 
   for (const anchorId of anchorsUsed) {

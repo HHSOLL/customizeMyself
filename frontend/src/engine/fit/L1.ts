@@ -8,6 +8,7 @@ export interface L1FitResult extends FitResult {
 }
 
 export const applyGarmentL1 = (rig: AvatarRig, garment: GarmentItem): L1FitResult => {
+  void rig;
   const anchors = garment.anchors;
   const solverIterations = Math.max(8, anchors.length * 3);
   const estimatedLatencyMs = solverIterations * 6;
