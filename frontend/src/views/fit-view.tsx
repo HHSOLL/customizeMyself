@@ -5,6 +5,8 @@ import styles from './fit-view.module.css';
 import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
 import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvatarParams';
 import type { AvatarRig } from '../engine/avatar/types';
+import { getGarmentCatalog } from '../data/garments';
+import { useAvatarStore } from '../store/avatar.store';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -19,6 +21,18 @@ export function FitView(): JSX.Element {
   const rigRef = useRef<AvatarRig>(createLoggingRig());
   const avatarParams = useAvatarParameters();
   const warnings = useAvatarWarnings();
+  const garmentSelections = useAvatarStore((state) => state.garmentSelections);
+  const setGarmentSelections = useAvatarStore((state) => state.setGarmentSelections);
+
+  const catalog = useMemo(() => getGarmentCatalog(), []);
+
+  useEffect(() => {
+    if (garmentSelections.length === 0) {
+      return;
+    }
+
+    console.debug('[Garments] Selected items ->', garmentSelections);
+  }, [garmentSelections]);
 
   useEffect(() => {
     if (!avatarParams) {
@@ -103,9 +117,40 @@ export function FitView(): JSX.Element {
       </main>
 
       <footer className={styles.catalogBar}>
-        <div>
+        <div className={styles.catalogMeta}>
           <h3>의상 카탈로그</h3>
-          <p>썸네일 목록, 착용/벗기기 토글이 배치될 자리입니다.</p>
+          <p>샘플 데이터 {catalog.items.length}개 — 착용할 항목을 선택하세요.</p>
+          <div className={styles.tagList}>
+            <span className={styles.tag}>Top</span>
+            <span className={styles.tag}>Bottom</span>
+          </div>
+        </div>
+        <div className={styles.catalogGrid}>
+          {catalog.items.map((item) => {
+            const isSelected = garmentSelections.includes(item.id);
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`${styles.catalogCard} ${isSelected ? styles.catalogCardActive : ''}`}
+                onClick={() => {
+                  setGarmentSelections(
+                    isSelected
+                      ? garmentSelections.filter((id) => id !== item.id)
+                      : [...garmentSelections, item.id],
+                  );
+                }}
+              >
+                <div className={styles.catalogThumb}>
+                  <span>{item.category === 'top' ? '상의' : '하의'}</span>
+                </div>
+                <div>
+                  <strong>{item.label}</strong>
+                  <p>{item.license.author}</p>
+                </div>
+              </button>
+            );
+          })}
         </div>
         <button className={styles.snapshotBtn} type="button">
           스냅샷 저장 (준비 중)

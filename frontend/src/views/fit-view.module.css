@@ -94,9 +94,9 @@
 .catalogBar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 2rem;
   padding: 1.25rem clamp(1.5rem, 4vw, 3rem);
   border-top: 1px solid rgba(75, 140, 255, 0.18);
   background: rgba(6, 10, 18, 0.94);
@@ -109,6 +109,80 @@
 .catalogBar p {
   margin: 0;
   color: #aebce0;
+}
+
+.catalogMeta {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 220px;
+}
+
+.tagList {
+  display: inline-flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(75, 140, 255, 0.2);
+  color: #d4e2ff;
+  font-size: 0.85rem;
+}
+
+.catalogGrid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  flex: 1;
+  min-width: 280px;
+}
+
+.catalogCard {
+  padding: 0.85rem;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 140, 255, 0.16);
+  background: rgba(12, 16, 26, 0.88);
+  color: inherit;
+  display: grid;
+  gap: 0.5rem;
+  text-align: left;
+  transition:
+    border 0.2s ease,
+    transform 0.2s ease;
+}
+
+.catalogCard:hover {
+  transform: translateY(-2px);
+}
+
+.catalogCardActive {
+  border-color: rgba(93, 219, 154, 0.6);
+  box-shadow: 0 0 0 1px rgba(93, 219, 154, 0.35);
+}
+
+.catalogCard strong {
+  display: block;
+  color: #f5f7fb;
+}
+
+.catalogCard p {
+  margin: 0;
+  color: #99a8cc;
+  font-size: 0.85rem;
+}
+
+.catalogThumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  border-radius: 12px;
+  border: 1px dashed rgba(75, 140, 255, 0.3);
+  background: rgba(7, 11, 18, 0.7);
+  color: #7fa8ff;
+  font-weight: 600;
 }
 
 .snapshotBtn {
@@ -144,5 +218,9 @@
   .catalogBar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .catalogGrid {
+    width: 100%;
   }
 }
