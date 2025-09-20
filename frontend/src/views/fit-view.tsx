@@ -9,6 +9,7 @@ import { useAvatarStore, useFitHistory } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
 import { applyGarmentL1 } from '../engine/fit/L1';
 import { FitScene } from '../components/fitting/fit-scene';
+import { postFitHistory } from '../services/api';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -50,33 +51,65 @@ export function FitView(): JSX.Element {
 
     let downgraded = false;
 
+    const recordFitHistory = async (
+      tier: 'L0' | 'L1',
+      garmentId: string,
+      latencyMs: number,
+      message: string,
+      degraded = false,
+      details?: Record<string, unknown>,
+    ) => {
+      appendFitHistory({
+        timestamp: new Date().toISOString(),
+        garmentId,
+        tier,
+        message,
+      });
+
+      void postFitHistory({ tier, garmentId, latencyMs, degraded, details });
+    };
+
     for (const garment of selectedGarments) {
       if (physicsTier === 'L1') {
         const l1Result = applyGarmentL1(rigRef.current, garment);
-        appendFitHistory({
-          timestamp: new Date().toISOString(),
-          garmentId: garment.id,
-          tier: 'L1',
-          message: `anchors=${l1Result.anchorsUsed.length} latency=${l1Result.estimatedLatencyMs}ms iter=${l1Result.solverIterations}`,
-        });
+        void recordFitHistory(
+          'L1',
+          garment.id,
+          l1Result.estimatedLatencyMs,
+          `anchors=${l1Result.anchorsUsed.length} latency=${l1Result.estimatedLatencyMs}ms iter=${l1Result.solverIterations}`,
+          l1Result.degraded,
+          {
+            anchorsUsed: l1Result.anchorsUsed,
+            solverIterations: l1Result.solverIterations,
+          },
+        );
         if (l1Result.degraded) {
           downgraded = true;
           const fallback = applyGarmentL0(rigRef.current, garment);
-          appendFitHistory({
-            timestamp: new Date().toISOString(),
-            garmentId: garment.id,
-            tier: 'L0',
-            message: `fallback latency=${fallback.estimatedLatencyMs}ms`,
-          });
+          void recordFitHistory(
+            'L0',
+            garment.id,
+            fallback.estimatedLatencyMs,
+            `fallback latency=${fallback.estimatedLatencyMs}ms`,
+            true,
+            {
+              fallback: true,
+              anchorsUsed: fallback.anchorsUsed,
+            },
+          );
         }
       } else {
         const l0Result = applyGarmentL0(rigRef.current, garment);
-        appendFitHistory({
-          timestamp: new Date().toISOString(),
-          garmentId: garment.id,
-          tier: 'L0',
-          message: `anchors=${l0Result.anchorsUsed.length} latency=${l0Result.estimatedLatencyMs}ms`,
-        });
+        void recordFitHistory(
+          'L0',
+          garment.id,
+          l0Result.estimatedLatencyMs,
+          `anchors=${l0Result.anchorsUsed.length} latency=${l0Result.estimatedLatencyMs}ms`,
+          false,
+          {
+            anchorsUsed: l0Result.anchorsUsed,
+          },
+        );
       }
     }
 
