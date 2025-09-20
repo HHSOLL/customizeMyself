@@ -63,7 +63,7 @@ const createInMemoryStorage = (): Storage => {
 
 const storage = createJSONStorage<AvatarState>(() =>
   typeof window === 'undefined' ? createInMemoryStorage() : window.localStorage,
-);
+)!;
 
 export const useAvatarStore = create<AvatarState>()(
   persist(

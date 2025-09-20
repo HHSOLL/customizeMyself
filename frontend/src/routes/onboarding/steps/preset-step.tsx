@@ -1,5 +1,5 @@
 import { useEffect, type JSX } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   GENDER_LABELS,
   PRESET_ORDER,
@@ -22,7 +22,7 @@ export function PresetStep(): JSX.Element {
   }, [gender, navigate]);
 
   if (!gender) {
-    return null;
+    return <Navigate to="/onboarding/gender" replace />;
   }
 
   const genderPresets = PRESETS[gender];
