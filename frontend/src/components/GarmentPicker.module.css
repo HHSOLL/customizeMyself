@@ -1,0 +1,147 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #f5f7fb;
+}
+
+.header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.headerTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.headerInfo {
+  font-size: 0.85rem;
+  color: #96a4c5;
+  margin: 0;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: #ffb48d;
+}
+
+.section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #dfe6ff;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.sectionMeta {
+  font-size: 0.75rem;
+  color: #7e8caf;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.card {
+  border-radius: 16px;
+  border: 1px solid rgba(90, 118, 188, 0.35);
+  background: rgba(10, 12, 20, 0.82);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.6rem;
+  transition:
+    border 0.2s ease,
+    background 0.2s ease;
+}
+
+.cardActive {
+  border-color: rgba(93, 219, 154, 0.75);
+  background: rgba(9, 18, 25, 0.9);
+  box-shadow: 0 0 0 1px rgba(93, 219, 154, 0.45);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 12px;
+  background: rgba(24, 30, 47, 0.9);
+  color: #c0ceff;
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBody {
+  flex: 1;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.cardBody strong {
+  font-size: 0.95rem;
+}
+
+.cardBody p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #97a7ce;
+}
+
+.actionButton {
+  border-radius: 999px;
+  border: 1px solid rgba(110, 138, 212, 0.45);
+  background: transparent;
+  color: #dce4ff;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.9rem;
+  cursor: pointer;
+  transition:
+    border 0.2s ease,
+    color 0.2s ease;
+}
+
+.actionButton:hover {
+  border-color: rgba(93, 219, 154, 0.7);
+  color: #5ddb9a;
+}
+
+.anchors {
+  font-size: 0.7rem;
+  color: #9bb6f9;
+}
+
+.toast {
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 196, 122, 0.4);
+  background: rgba(255, 196, 122, 0.12);
+  color: #ffd6a1;
+  font-size: 0.75rem;
+}
