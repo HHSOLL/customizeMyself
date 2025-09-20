@@ -2,13 +2,14 @@ import type { JSX } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, memo, useMemo } from 'react';
 import { GarmentModel } from './garment-model';
-import { useAvatarStore } from '../../store/avatar.store';
-import { getGarmentCatalog } from '../../data/garments';
+import type { GarmentCatalog } from '../../data/garments';
 
-export const FitScene = memo((): JSX.Element => {
-  const garmentIds = useAvatarStore((state) => state.garmentSelections);
-  const catalog = useMemo(() => getGarmentCatalog(), []);
+interface FitSceneProps {
+  garmentIds: string[];
+  catalog: GarmentCatalog;
+}
 
+export const FitScene = memo(({ garmentIds, catalog }: FitSceneProps): JSX.Element => {
   const garments = useMemo(
     () => garmentIds.map((id) => catalog.items.find((item) => item.id === id)).filter(Boolean),
     [garmentIds, catalog.items],

@@ -176,6 +176,12 @@
   color: #aebce0;
 }
 
+.catalogWarning {
+  margin-top: 0.35rem;
+  color: #ffb48d;
+  font-size: 0.85rem;
+}
+
 .catalogMeta {
   display: grid;
   gap: 0.6rem;

@@ -47,3 +47,22 @@ export async function requestSnapshotPresign(payload: PresignRequest) {
     expiresIn: number;
   }>;
 }
+
+export interface GarmentResponse {
+  id: string;
+  label: string;
+  category: string;
+  assetUrl: string;
+  anchors: string[];
+  license?: {
+    type: string;
+    author: string;
+    url?: string;
+  } | null;
+  thumbnailUrl?: string | null;
+}
+
+export async function fetchGarments(): Promise<GarmentResponse[]> {
+  const response = await safeFetch(`${API_BASE}/garments`);
+  return response.json();
+}

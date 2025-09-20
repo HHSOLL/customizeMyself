@@ -4,12 +4,12 @@ import styles from './fit-view.module.css';
 import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
 import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvatarParams';
 import type { AvatarRig } from '../engine/avatar/types';
-import { getGarmentCatalog } from '../data/garments';
 import { useAvatarStore, useFitHistory } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
 import { applyGarmentL1 } from '../engine/fit/L1';
 import { FitScene } from '../components/fitting/fit-scene';
 import { postFitHistory } from '../services/api';
+import { useGarmentCatalog } from '../hooks/useGarmentCatalog';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -33,7 +33,7 @@ export function FitView(): JSX.Element {
   const clearFitHistory = useAvatarStore((state) => state.clearFitHistory);
   const fitHistory = useFitHistory();
 
-  const catalog = useMemo(() => getGarmentCatalog(), []);
+  const { catalog, loading: catalogLoading, error: catalogError } = useGarmentCatalog();
 
   const selectedGarments = useMemo(
     () => catalog.items.filter((item) => garmentSelections.includes(item.id)),
@@ -167,7 +167,7 @@ export function FitView(): JSX.Element {
       <main className={styles.stage}>
         <section className={styles.viewer}>
           <Suspense fallback={<PlaceholderAvatar />}>
-            <FitScene />
+            <FitScene garmentIds={garmentSelections} catalog={catalog} />
           </Suspense>
         </section>
 
@@ -239,7 +239,15 @@ export function FitView(): JSX.Element {
       <footer className={styles.catalogBar}>
         <div className={styles.catalogMeta}>
           <h3>의상 카탈로그</h3>
-          <p>샘플 데이터 {catalog.items.length}개 — 착용할 항목을 선택하세요.</p>
+          <p>
+            의상 데이터 {catalogLoading ? '로딩 중…' : `${catalog.items.length}개`} — 착용할 항목을
+            선택하세요.
+          </p>
+          {catalogError ? (
+            <p className={styles.catalogWarning}>
+              원격 카탈로그 로드 실패: 로컬 데이터를 사용합니다.
+            </p>
+          ) : null}
           <div className={styles.tagList}>
             <span className={styles.tag}>Top</span>
             <span className={styles.tag}>Bottom</span>
