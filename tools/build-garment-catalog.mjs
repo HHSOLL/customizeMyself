@@ -4,44 +4,15 @@ import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import fg from 'fast-glob';
-import { z } from 'zod';
 
 const DEFAULT_META_DIR = 'frontend/src/assets/garments/meta';
 const DEFAULT_ANCHORS_DIR = 'frontend/src/assets/garments/anchors';
 const DEFAULT_OUT_PATH = 'frontend/src/assets/garments/garments.generated.json';
 
-const MetaSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  category: z.enum(['top', 'bottom', 'full']),
-  asset: z.string(),
-  thumbnail: z.string().optional(),
-  anchors: z.array(z.string()).optional(),
-  license: z
-    .object({
-      type: z.string(),
-      author: z.string(),
-      url: z.string().optional(),
-    })
-    .optional(),
-});
-
-const AnchorSchema = z.object({
-  garment: z.object({
-    id: z.string(),
-  }),
-  anchors: z.array(
-    z.object({
-      id: z.string(),
-      description: z.string().optional(),
-      position: z.array(z.number()).length(3).optional(),
-      normal: z.array(z.number()).length(3).optional(),
-    }),
-  ),
-});
-
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '..');
+
+const resolvePath = (target) => (path.isAbsolute(target) ? target : path.resolve(repoRoot, target));
 
 const parseArgs = () => {
   const options = {
@@ -64,12 +35,16 @@ const parseArgs = () => {
         options.out = args[++i];
         break;
       default:
-        console.warn(`[codegen] Unknown argument ${arg} ignored`);
+        console.warn(`[codegen] unknown argument ${arg} ignored`);
         break;
     }
   }
 
-  return options;
+  return {
+    metaDir: resolvePath(options.metaDir),
+    anchorsDir: resolvePath(options.anchorsDir),
+    out: resolvePath(options.out),
+  };
 };
 
 const safeReadJson = async (filePath) => {
@@ -77,69 +52,87 @@ const safeReadJson = async (filePath) => {
     const content = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    console.warn(`[codegen] Failed to read ${filePath}: ${error.message ?? error}`);
+    console.warn(`[codegen] failed to read ${filePath}: ${error.message ?? error}`);
     return null;
   }
 };
 
-const loadAnchorMap = async (anchorsDir) => {
+const pathExists = async (target) => {
   try {
-    const files = await fg('**/*.json', { cwd: anchorsDir, dot: false, absolute: true });
-    const map = new Map();
-    for (const file of files) {
-      const json = await safeReadJson(file);
-      if (!json) continue;
-      const parsed = AnchorSchema.safeParse(json);
-      if (!parsed.success) {
-        console.warn(`[codegen] Skipping invalid anchor file ${file}`);
-        continue;
-      }
-      map.set(parsed.data.garment.id, parsed.data.anchors);
-    }
-    return map;
-  } catch (error) {
-    console.warn(`[codegen] Anchor scan failed: ${error.message ?? error}`);
-    return new Map();
+    await fs.access(target);
+    return true;
+  } catch {
+    return false;
   }
 };
 
-const resolvePath = (target) => (path.isAbsolute(target) ? target : path.resolve(repoRoot, target));
-
-const buildCatalog = async (options) => {
-  const metaDir = resolvePath(options.metaDir);
-  const anchorsDir = resolvePath(options.anchorsDir);
-  const outPath = resolvePath(options.out);
-
-  const metaPattern = path.join(metaDir, '**/*.json');
-  let files = [];
-  try {
-    files = await fg(metaPattern, { dot: false, absolute: true });
-  } catch (error) {
-    console.warn(`[codegen] Failed to scan meta directory: ${error.message ?? error}`);
+const globJsonFiles = async (dir) => {
+  if (!(await pathExists(dir))) {
+    return [];
   }
 
-  const anchorsMap = await loadAnchorMap(anchorsDir);
+  try {
+    return await fg('**/*.json', { cwd: dir, dot: false, absolute: true });
+  } catch (error) {
+    console.warn(`[codegen] glob failed in ${dir}: ${error.message ?? error}`);
+    return [];
+  }
+};
 
-  const items = [];
+const loadAnchorMap = async (anchorsDir) => {
+  const map = new Map();
+  const files = await globJsonFiles(anchorsDir);
   for (const file of files) {
     const json = await safeReadJson(file);
-    if (!json) continue;
-    const parsed = MetaSchema.safeParse(json);
-    if (!parsed.success) {
-      console.warn(`[codegen] Meta validation failed for ${file}`);
+    if (!json || typeof json.id !== 'string') {
       continue;
     }
-    const data = parsed.data;
-    items.push({
-      id: data.id,
-      label: data.label,
-      category: data.category,
-      asset: data.asset,
-      thumbnail: data.thumbnail ?? null,
-      anchors: data.anchors ?? anchorsMap.get(data.id)?.map((anchor) => anchor.id) ?? [],
-      anchorMeta: anchorsMap.get(data.id) ?? null,
-      license: data.license ?? null,
-    });
+    map.set(json.id, json);
+  }
+  return map;
+};
+
+const normalizeMeta = (meta, anchorEntry) => {
+  const asset = meta.asset ?? meta.assetUrl ?? '';
+  if (!asset) {
+    throw new Error('asset field is required');
+  }
+
+  return {
+    id: meta.id,
+    name: meta.name ?? meta.label ?? meta.id,
+    category: meta.category ?? null,
+    asset,
+    thumbnail: meta.thumbnail ?? meta.thumbnailUrl ?? null,
+    tags: Array.isArray(meta.tags) ? meta.tags : [],
+    anchors: Array.isArray(meta.anchors) ? meta.anchors : anchorEntry?.anchors ?? [],
+    anchorMeta: anchorEntry ?? null,
+    license: meta.license ?? null,
+  };
+};
+
+const writeCatalog = async (outPath, catalog) => {
+  await fs.mkdir(path.dirname(outPath), { recursive: true });
+  await fs.writeFile(outPath, `${JSON.stringify(catalog, null, 2)}\n`, 'utf-8');
+  const label = catalog.items.length === 1 ? 'item' : 'items';
+  console.log(`[codegen] wrote ${outPath} (${catalog.items.length} ${label})`);
+};
+
+const buildCatalog = async (options) => {
+  const items = [];
+  const metaFiles = await globJsonFiles(options.metaDir);
+  const anchorMap = await loadAnchorMap(options.anchorsDir);
+
+  for (const file of metaFiles) {
+    const json = await safeReadJson(file);
+    if (!json || typeof json.id !== 'string') {
+      continue;
+    }
+    try {
+      items.push(normalizeMeta(json, anchorMap.get(json.id)));
+    } catch (error) {
+      console.warn(`[codegen] skipped ${file}: ${error.message ?? error}`);
+    }
   }
 
   items.sort((a, b) => a.id.localeCompare(b.id));
@@ -149,23 +142,24 @@ const buildCatalog = async (options) => {
     updatedAt: new Date().toISOString(),
   };
 
-  try {
-    await fs.mkdir(path.dirname(outPath), { recursive: true });
-    await fs.writeFile(outPath, `${JSON.stringify(catalog, null, 2)}\n`, 'utf-8');
-    const label = items.length === 1 ? 'item' : 'items';
-    console.log(`[codegen] wrote ${outPath} (${items.length} ${label})`);
-  } catch (error) {
-    console.error(`[codegen] Failed to write catalog: ${error.message ?? error}`);
-  }
+  await writeCatalog(options.out, catalog);
+  return catalog;
 };
 
 const main = async () => {
   const options = parseArgs();
-  await buildCatalog(options).catch((error) => {
-    console.error('[codegen] Unexpected error:', error.message ?? error);
-  });
+  try {
+    await buildCatalog(options);
+  } catch (error) {
+    console.error('[codegen] unexpected error:', error.message ?? error);
+    const fallback = {
+      items: [],
+      updatedAt: new Date().toISOString(),
+    };
+    await writeCatalog(options.out, fallback);
+  } finally {
+    process.exit(0);
+  }
 };
 
-main().finally(() => {
-  process.exit(0);
-});
+main();

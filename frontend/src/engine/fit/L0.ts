@@ -9,7 +9,7 @@ export interface FitResult {
 
 export const applyGarmentL0 = (rig: AvatarRig, garment: GarmentItem): FitResult => {
   void rig;
-  const anchorsUsed = garment.anchors;
+  const anchorsUsed = garment.anchors ?? [];
 
   for (const anchorId of anchorsUsed) {
     console.debug(`[L0] Aligning anchor ${anchorId} for garment ${garment.id}`);

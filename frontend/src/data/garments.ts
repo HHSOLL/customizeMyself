@@ -1,35 +1,35 @@
-import catalogJson from '../assets/garments/garments.generated.json';
+import raw from '../assets/garments/garments.generated.json';
 
-export type GarmentCategory = 'top' | 'bottom';
-
-export interface GarmentItem {
+type Item = {
   id: string;
-  label: string;
-  category: GarmentCategory;
   asset: string;
-  thumbnail: string | null;
-  anchors: string[];
-  anchorMeta?: Array<{
-    id: string;
-    description?: string;
-    position?: [number, number, number];
-    normal?: [number, number, number];
-  }> | null;
-  license: {
-    type: string;
-    author: string;
-    url?: string;
-  } | null;
-}
+  name?: string;
+  category?: string;
+  thumbnail?: string;
+  tags?: string[];
+  anchors?: string[];
+  anchorMeta?: unknown;
+  license?: Record<string, unknown> | null;
+};
 
-export interface GarmentCatalog {
-  items: GarmentItem[];
-  updatedAt: string;
-}
+type Catalog = { items: Item[]; updatedAt?: string };
 
-const catalog = catalogJson as GarmentCatalog;
+const hasItemArray = (value: unknown): value is Catalog => {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
 
-export const getGarmentCatalog = (): GarmentCatalog => catalog;
+  const candidate = value as { items?: unknown };
+  return Array.isArray(candidate.items);
+};
 
-export const findGarmentById = (id: string): GarmentItem | undefined =>
-  catalog.items.find((item) => item.id === id);
+const catalog: Catalog = Array.isArray(raw)
+  ? { items: raw as Item[] }
+  : hasItemArray(raw)
+    ? raw
+    : { items: [] };
+
+export const getGarmentCatalog = () => catalog;
+
+export type GarmentItem = Item;
+export type GarmentCatalog = Catalog;

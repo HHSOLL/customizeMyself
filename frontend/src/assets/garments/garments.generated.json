@@ -1,29 +1,32 @@
 {
   "items": [
     {
+      "id": "pants-basic",
+      "name": "Basic Pants (Demo)",
+      "category": "bottom",
+      "asset": "/garments/pants.glb",
+      "thumbnail": "/garments/pants.png",
+      "tags": ["demo"],
+      "anchors": [],
+      "anchorMeta": {
+        "id": "pants-basic",
+        "bindPose": {
+          "scale": 1,
+          "offset": [0, 0, 0],
+          "rotationEuler": [0, 0, 0]
+        }
+      },
+      "license": null
+    },
+    {
       "id": "sample_bottom_01",
-      "label": "컴포트 팬츠",
+      "name": "컴포트 팬츠",
       "category": "bottom",
       "asset": "/assets/garments/sample_bottom_01.glb",
       "thumbnail": "/assets/garments/sample_bottom_01.png",
+      "tags": [],
       "anchors": ["waist_center", "hip_L", "hip_R", "inseam_L", "inseam_R"],
-      "anchorMeta": [
-        {
-          "id": "waist_center"
-        },
-        {
-          "id": "hip_L"
-        },
-        {
-          "id": "hip_R"
-        },
-        {
-          "id": "inseam_L"
-        },
-        {
-          "id": "inseam_R"
-        }
-      ],
+      "anchorMeta": null,
       "license": {
         "type": "CC0",
         "author": "Sample Creator"
@@ -31,33 +34,36 @@
     },
     {
       "id": "sample_top_01",
-      "label": "라이트 자켓",
+      "name": "라이트 자켓",
       "category": "top",
       "asset": "/assets/garments/sample_top_01.glb",
       "thumbnail": "/assets/garments/sample_top_01.png",
+      "tags": [],
       "anchors": ["neck_base", "shoulder_L", "shoulder_R", "chest_center", "waist_center"],
-      "anchorMeta": [
-        {
-          "id": "neck_base"
-        },
-        {
-          "id": "shoulder_L"
-        },
-        {
-          "id": "shoulder_R"
-        },
-        {
-          "id": "chest_center"
-        },
-        {
-          "id": "waist_center"
-        }
-      ],
+      "anchorMeta": null,
       "license": {
         "type": "CC0",
         "author": "Sample Creator"
       }
+    },
+    {
+      "id": "tshirt-basic",
+      "name": "Basic T-Shirt (Demo)",
+      "category": "top",
+      "asset": "/garments/t_shirt.glb",
+      "thumbnail": "/garments/t_shirt.png",
+      "tags": ["demo"],
+      "anchors": [],
+      "anchorMeta": {
+        "id": "tshirt-basic",
+        "bindPose": {
+          "scale": 1,
+          "offset": [0, 0, 0],
+          "rotationEuler": [0, 0, 0]
+        }
+      },
+      "license": null
     }
   ],
-  "updatedAt": "2025-09-20T13:17:15.640Z"
+  "updatedAt": "2025-09-20T14:14:24.235Z"
 }

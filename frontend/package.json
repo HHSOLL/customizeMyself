@@ -8,7 +8,7 @@
     "dev": "run-p catalog:watch dev:vite",
     "dev:vite": "vite",
     "catalog:generate": "node ../tools/build-garment-catalog.mjs --out frontend/src/assets/garments/garments.generated.json",
-    "catalog:watch": "node --watch ../tools/build-garment-catalog.mjs --watch-path ./src/assets/garments/meta --watch-path ./src/assets/garments/anchors --out frontend/src/assets/garments/garments.generated.json",
+    "catalog:watch": "node --watch ../tools/build-garment-catalog.mjs --watch-path ./src/assets/garments/meta --watch-path ./src/assets/garments/anchors",
     "build": "npm run catalog:generate && tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,html,json}\"",

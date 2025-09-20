@@ -1,0 +1,8 @@
+{
+  "id": "pants-basic",
+  "name": "Basic Pants (Demo)",
+  "category": "bottom",
+  "asset": "/garments/pants.glb",
+  "thumbnail": "/garments/pants.png",
+  "tags": ["demo"]
+}

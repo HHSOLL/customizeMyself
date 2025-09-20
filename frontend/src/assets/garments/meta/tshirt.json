@@ -1,0 +1,8 @@
+{
+  "id": "tshirt-basic",
+  "name": "Basic T-Shirt (Demo)",
+  "category": "top",
+  "asset": "/garments/t_shirt.glb",
+  "thumbnail": "/garments/t_shirt.png",
+  "tags": ["demo"]
+}
