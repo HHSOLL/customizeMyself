@@ -12,8 +12,9 @@ model Garment {
   label      String
   category   String
   assetUrl   String
-  anchors    Json
+  anchors    String[]
   license    Json?
+  thumbnailUrl String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   fits       FitHistory[]
