@@ -1,4 +1,4 @@
-import garments from '../assets/garments/garments.sample.json';
+import catalogJson from '../assets/garments/garments.generated.json';
 
 export type GarmentCategory = 'top' | 'bottom';
 
@@ -12,6 +12,7 @@ export interface GarmentItem {
   license: {
     type: string;
     author: string;
+    url?: string;
   };
 }
 
@@ -20,9 +21,6 @@ export interface GarmentCatalog {
   updatedAt: string;
 }
 
-const catalog: GarmentCatalog = {
-  items: garments as GarmentItem[],
-  updatedAt: new Date().toISOString(),
-};
+const catalog = catalogJson as GarmentCatalog;
 
 export const getGarmentCatalog = (): GarmentCatalog => catalog;

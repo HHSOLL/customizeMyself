@@ -1,0 +1,19 @@
+{
+  "garment": {
+    "id": "sample_top_01",
+    "label": "라이트 자켓",
+    "category": "top",
+    "thumbnail": "/assets/garments/sample_top_01.png"
+  },
+  "anchors": [
+    { "id": "neck_base" },
+    { "id": "shoulder_L" },
+    { "id": "shoulder_R" },
+    { "id": "chest_center" },
+    { "id": "waist_center" }
+  ],
+  "license": {
+    "type": "CC0",
+    "author": "Sample Creator"
+  }
+}

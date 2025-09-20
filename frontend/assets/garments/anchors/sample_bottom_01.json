@@ -1,0 +1,19 @@
+{
+  "garment": {
+    "id": "sample_bottom_01",
+    "label": "컴포트 팬츠",
+    "category": "bottom",
+    "thumbnail": "/assets/garments/sample_bottom_01.png"
+  },
+  "anchors": [
+    { "id": "waist_center" },
+    { "id": "hip_L" },
+    { "id": "hip_R" },
+    { "id": "inseam_L" },
+    { "id": "inseam_R" }
+  ],
+  "license": {
+    "type": "CC0",
+    "author": "Sample Creator"
+  }
+}

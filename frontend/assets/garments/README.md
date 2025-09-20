@@ -1,13 +1,18 @@
-# Garment Catalog (Stub)
+# Garment Catalog
 
-`garments.sample.json`은 도구 파이프라인이 준비되기 전까지 사용할 플레이스홀더 데이터입니다. 실제 배포에서는 `tools/convert-gltf`와 `tools/add-anchors`를 통해 생성된 메타데이터를 기반으로 이 파일을 자동 생성할 예정입니다.
+의상 데이터는 `meta/*.json` 파일로 관리하며, `tools/build-garment-catalog` 스크립트를 통해 `garments.generated.json`으로 집계됩니다. 파이프라인은 다음 단계를 따릅니다.
 
-필드 설명:
+1. 원본 메시를 `tools/convert-gltf`로 정규화하여 GLB를 생성합니다.
+2. `tools/add-anchors`로 앵커와 기본 메타데이터를 GLB `asset.extras.garment`에 주입합니다.
+3. `meta/*.json` 파일에 썸네일·라이선스 등 추가 정보를 기록합니다.
+4. `npm run tools:build-catalog`를 실행하면 모든 메타 파일을 검증하고 `garments.generated.json`을 생성합니다.
+
+## 메타 필드
 
 - `id`: 고유 식별자
-- `label`: UI에 노출되는 이름 (한국어)
-- `category`: `top` 또는 `bottom`
-- `asset`: glTF 자산 경로
+- `label`: UI에 노출되는 한국어 이름
+- `category`: `top`, `bottom`, `full`
+- `asset`: 번들에 포함될 GLB 경로
 - `thumbnail`: 썸네일 이미지 경로
 - `anchors`: 필수 앵커 ID 목록 (검증용)
-- `license`: 저작권/출처 정보
+- `license`: 타입, author, url
