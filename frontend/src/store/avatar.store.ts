@@ -165,7 +165,7 @@ export const useAvatarStore = create<AvatarState>()(
           fitHistory: state.fitHistory,
         }) satisfies PersistedAvatarState,
       onRehydrateStorage: () => () => {
-        set({ hydrated: true });
+        useAvatarStore.setState({ hydrated: true });
       },
     },
   ),

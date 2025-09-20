@@ -7,13 +7,19 @@ export interface GarmentItem {
   label: string;
   category: GarmentCategory;
   asset: string;
-  thumbnail: string;
+  thumbnail: string | null;
   anchors: string[];
+  anchorMeta?: Array<{
+    id: string;
+    description?: string;
+    position?: [number, number, number];
+    normal?: [number, number, number];
+  }> | null;
   license: {
     type: string;
     author: string;
     url?: string;
-  };
+  } | null;
 }
 
 export interface GarmentCatalog {

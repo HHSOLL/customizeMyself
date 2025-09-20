@@ -238,7 +238,7 @@ export function FitView(): JSX.Element {
                 </div>
                 <div className={styles.catalogDetails}>
                   <strong>{item.label}</strong>
-                  <p>{item.license.author}</p>
+                  <p>{item.license?.author ?? 'Unknown'}</p>
                   {isSelected ? (
                     <ul>
                       {item.anchors.map((anchor) => (

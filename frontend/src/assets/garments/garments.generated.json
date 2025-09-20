@@ -1,0 +1,63 @@
+{
+  "items": [
+    {
+      "id": "sample_bottom_01",
+      "label": "컴포트 팬츠",
+      "category": "bottom",
+      "asset": "/assets/garments/sample_bottom_01.glb",
+      "thumbnail": "/assets/garments/sample_bottom_01.png",
+      "anchors": ["waist_center", "hip_L", "hip_R", "inseam_L", "inseam_R"],
+      "anchorMeta": [
+        {
+          "id": "waist_center"
+        },
+        {
+          "id": "hip_L"
+        },
+        {
+          "id": "hip_R"
+        },
+        {
+          "id": "inseam_L"
+        },
+        {
+          "id": "inseam_R"
+        }
+      ],
+      "license": {
+        "type": "CC0",
+        "author": "Sample Creator"
+      }
+    },
+    {
+      "id": "sample_top_01",
+      "label": "라이트 자켓",
+      "category": "top",
+      "asset": "/assets/garments/sample_top_01.glb",
+      "thumbnail": "/assets/garments/sample_top_01.png",
+      "anchors": ["neck_base", "shoulder_L", "shoulder_R", "chest_center", "waist_center"],
+      "anchorMeta": [
+        {
+          "id": "neck_base"
+        },
+        {
+          "id": "shoulder_L"
+        },
+        {
+          "id": "shoulder_R"
+        },
+        {
+          "id": "chest_center"
+        },
+        {
+          "id": "waist_center"
+        }
+      ],
+      "license": {
+        "type": "CC0",
+        "author": "Sample Creator"
+      }
+    }
+  ],
+  "updatedAt": "2025-09-20T11:37:41.929Z"
+}

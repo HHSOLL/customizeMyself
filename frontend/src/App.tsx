@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import './App.css';
 import { AppRoutes } from './routes/app-routes';
 
