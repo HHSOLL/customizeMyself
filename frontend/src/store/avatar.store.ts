@@ -28,6 +28,7 @@ export interface AvatarState {
   garmentSelections: string[];
   fitHistory: FitHistoryEntry[];
   hydrated: boolean;
+  measurementProfileId: string | null;
   setGender: (gender: Gender) => void;
   setPreset: (preset: BodyPreset) => void;
   setMeasurement: (key: MeasurementKey, value: number) => void;
@@ -38,12 +39,19 @@ export interface AvatarState {
   appendFitHistory: (entry: FitHistoryEntry) => void;
   clearFitHistory: () => void;
   markHydrated: () => void;
+  setMeasurementProfileId: (id: string | null) => void;
   resetAll: () => void;
 }
 
 type PersistedAvatarState = Pick<
   AvatarState,
-  'gender' | 'preset' | 'measurements' | 'physicsTier' | 'garmentSelections' | 'fitHistory'
+  | 'gender'
+  | 'preset'
+  | 'measurements'
+  | 'physicsTier'
+  | 'garmentSelections'
+  | 'fitHistory'
+  | 'measurementProfileId'
 >;
 
 const definitionLookup: Record<MeasurementKey, MeasurementDefinition> = Object.fromEntries(
@@ -93,6 +101,7 @@ export const useAvatarStore = create<AvatarState>()(
       garmentSelections: [],
       fitHistory: [],
       hydrated: typeof window === 'undefined' ? false : true,
+      measurementProfileId: null,
       setGender: (gender) => {
         set({ gender });
         const { preset } = get();
@@ -139,6 +148,7 @@ export const useAvatarStore = create<AvatarState>()(
       },
       clearFitHistory: () => set({ fitHistory: [] }),
       markHydrated: () => set({ hydrated: true }),
+      setMeasurementProfileId: (id) => set({ measurementProfileId: id }),
       resetAll: () => {
         set({
           gender: null,
@@ -148,6 +158,7 @@ export const useAvatarStore = create<AvatarState>()(
           physicsTier: 'L0',
           fitHistory: [],
           hydrated: true,
+          measurementProfileId: null,
         });
       },
     }),
@@ -163,6 +174,7 @@ export const useAvatarStore = create<AvatarState>()(
           physicsTier: state.physicsTier,
           garmentSelections: state.garmentSelections,
           fitHistory: state.fitHistory,
+          measurementProfileId: state.measurementProfileId,
         }) satisfies PersistedAvatarState,
       onRehydrateStorage: () => () => {
         useAvatarStore.setState({ hydrated: true });

@@ -66,3 +66,18 @@ export async function fetchGarments(): Promise<GarmentResponse[]> {
   const response = await safeFetch(`${API_BASE}/garments`);
   return response.json();
 }
+
+export interface MeasurementPayload {
+  gender: string;
+  preset?: string;
+  data: Record<string, number>;
+}
+
+export async function createMeasurement(payload: MeasurementPayload): Promise<{ id: string }> {
+  const response = await safeFetch(`${API_BASE}/measurements`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  return response.json();
+}
