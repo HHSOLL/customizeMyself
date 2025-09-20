@@ -57,6 +57,12 @@
   padding: 1.75rem clamp(1.5rem, 4vw, 3rem) 0;
 }
 
+.logsArea {
+  padding: 1.1rem clamp(1.5rem, 4vw, 3rem) 1.75rem;
+  display: flex;
+  justify-content: center;
+}
+
 .stagePanel {
   position: relative;
   border: 1px solid rgba(75, 140, 255, 0.2);
@@ -158,6 +164,10 @@
 
   .sidebar {
     max-height: 320px;
+  }
+
+  .logsArea {
+    padding: 1rem;
   }
 }
 

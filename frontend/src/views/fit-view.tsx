@@ -4,7 +4,7 @@ import styles from './fit-view.module.css';
 import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
 import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvatarParams';
 import type { AvatarRig } from '../engine/avatar/types';
-import { useAvatarStore } from '../store/avatar.store';
+import { useAvatarStore, useFitHistory } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
 import { applyGarmentL1 } from '../engine/fit/L1';
 import { FitScene } from '../components/fitting/fit-scene';
@@ -14,6 +14,7 @@ import { GarmentPicker } from '../components/GarmentPicker';
 import fitCameraToObject from '../engine/scene/fitCamera';
 import type { Group, PerspectiveCamera } from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { LogsPanel } from '../components/LogsPanel';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -34,6 +35,7 @@ export function FitView(): JSX.Element {
   const setPhysicsTier = useAvatarStore((state) => state.setPhysicsTier);
   const appendFitHistory = useAvatarStore((state) => state.appendFitHistory);
   const clearFitHistory = useAvatarStore((state) => state.clearFitHistory);
+  const fitHistory = useFitHistory();
 
   const { catalog, loading: catalogLoading, error: catalogError } = useGarmentCatalog();
 
@@ -277,7 +279,9 @@ export function FitView(): JSX.Element {
             />
           </aside>
         </div>
-        {/* Logs panel will be mounted below in a follow-up commit */}
+        <div className={styles.logsArea}>
+          <LogsPanel logs={fitHistory} onClear={clearFitHistory} />
+        </div>
       </div>
     </div>
   );
