@@ -21,7 +21,8 @@
     "typecheck": "tsc --project tsconfig.build.json --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:push": "prisma db push"
+    "prisma:push": "prisma db push",
+    "worker:fit-history": "ts-node --transpile-only src/workers/fit-history.worker.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -29,8 +30,10 @@
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.16.2",
+    "bullmq": "^5.58.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "ioredis": "^5.7.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
