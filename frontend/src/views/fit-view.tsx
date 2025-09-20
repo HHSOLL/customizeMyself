@@ -6,7 +6,7 @@ import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvat
 import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvatarParams';
 import type { AvatarRig } from '../engine/avatar/types';
 import { getGarmentCatalog } from '../data/garments';
-import { useAvatarStore } from '../store/avatar.store';
+import { useAvatarStore, useFitHistory } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
 import { applyGarmentL1 } from '../engine/fit/L1';
 
@@ -28,6 +28,9 @@ export function FitView(): JSX.Element {
   const physicsTier = useAvatarStore((state) => state.physicsTier);
   const togglePhysicsTier = useAvatarStore((state) => state.togglePhysicsTier);
   const setPhysicsTier = useAvatarStore((state) => state.setPhysicsTier);
+  const appendFitHistory = useAvatarStore((state) => state.appendFitHistory);
+  const clearFitHistory = useAvatarStore((state) => state.clearFitHistory);
+  const fitHistory = useFitHistory();
 
   const catalog = useMemo(() => getGarmentCatalog(), []);
 
@@ -36,47 +39,60 @@ export function FitView(): JSX.Element {
     [catalog.items, garmentSelections],
   );
 
-  const [fitLogs, setFitLogs] = useState<string[]>([]);
   const [autoDowngradeMessage, setAutoDowngradeMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedGarments.length === 0) {
-      setFitLogs([]);
+      clearFitHistory();
       setAutoDowngradeMessage(null);
       return;
     }
 
-    const logs: string[] = [];
     let downgraded = false;
 
     for (const garment of selectedGarments) {
       if (physicsTier === 'L1') {
         const l1Result = applyGarmentL1(rigRef.current, garment);
-        logs.push(
-          `[L1] ${garment.id} | anchors=${l1Result.anchorsUsed.length} | latency=${l1Result.estimatedLatencyMs}ms | iter=${l1Result.solverIterations}`,
-        );
+        appendFitHistory({
+          timestamp: new Date().toISOString(),
+          garmentId: garment.id,
+          tier: 'L1',
+          message: `anchors=${l1Result.anchorsUsed.length} latency=${l1Result.estimatedLatencyMs}ms iter=${l1Result.solverIterations}`,
+        });
         if (l1Result.degraded) {
           downgraded = true;
           const fallback = applyGarmentL0(rigRef.current, garment);
-          logs.push(`[L0] fallback ${garment.id} | latency=${fallback.estimatedLatencyMs}ms`);
+          appendFitHistory({
+            timestamp: new Date().toISOString(),
+            garmentId: garment.id,
+            tier: 'L0',
+            message: `fallback latency=${fallback.estimatedLatencyMs}ms`,
+          });
         }
       } else {
         const l0Result = applyGarmentL0(rigRef.current, garment);
-        logs.push(
-          `[L0] ${garment.id} | anchors=${l0Result.anchorsUsed.length} | latency=${l0Result.estimatedLatencyMs}ms`,
-        );
+        appendFitHistory({
+          timestamp: new Date().toISOString(),
+          garmentId: garment.id,
+          tier: 'L0',
+          message: `anchors=${l0Result.anchorsUsed.length} latency=${l0Result.estimatedLatencyMs}ms`,
+        });
       }
     }
 
     if (downgraded && physicsTier === 'L1') {
       setPhysicsTier('L0');
       setAutoDowngradeMessage('물리 성능 저하 감지: 자동으로 L0 모드로 전환되었습니다.');
+      appendFitHistory({
+        timestamp: new Date().toISOString(),
+        garmentId: 'system',
+        tier: 'L0',
+        message: 'Auto downgrade triggered due to latency budget overflow',
+      });
     } else {
       setAutoDowngradeMessage(null);
     }
-
-    setFitLogs(logs);
-  }, [selectedGarments, physicsTier, setPhysicsTier]);
+  }, [selectedGarments, physicsTier, setPhysicsTier, appendFitHistory, clearFitHistory]);
 
   useEffect(() => {
     if (!avatarParams) {
@@ -169,12 +185,22 @@ export function FitView(): JSX.Element {
               </ul>
             </div>
           ) : null}
-          {fitLogs.length > 0 ? (
+          {fitHistory.length > 0 ? (
             <div className={styles.logCard}>
-              <strong>최근 피팅 로그</strong>
+              <div className={styles.logHeader}>
+                <strong>최근 피팅 로그</strong>
+                <button type="button" onClick={clearFitHistory} className={styles.linkButton}>
+                  로그 비우기
+                </button>
+              </div>
               <ul>
-                {fitLogs.map((log) => (
-                  <li key={log}>{log}</li>
+                {fitHistory.map((entry) => (
+                  <li key={`${entry.timestamp}-${entry.message}`}>
+                    <span className={styles.logTimestamp}>{entry.timestamp}</span>
+                    <span className={styles.logTier}>{entry.tier}</span>
+                    <span className={styles.logGarment}>{entry.garmentId}</span>
+                    <span>{entry.message}</span>
+                  </li>
                 ))}
               </ul>
             </div>

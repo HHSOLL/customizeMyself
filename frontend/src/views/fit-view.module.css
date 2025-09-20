@@ -98,11 +98,39 @@
   color: #d7f4ff;
 }
 
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .logCard ul {
   margin: 0;
   padding-left: 1.2rem;
   color: inherit;
   font-size: 0.85rem;
+}
+
+.logTimestamp {
+  display: inline-block;
+  min-width: 10ch;
+  color: #9bb3ff;
+  margin-right: 0.5rem;
+}
+
+.logTier {
+  display: inline-block;
+  min-width: 3ch;
+  color: #5ddb9a;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+
+.logGarment {
+  display: inline-block;
+  min-width: 12ch;
+  color: #f5f7fb;
+  margin-right: 0.5rem;
 }
 
 .paramCard ul,

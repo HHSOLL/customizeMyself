@@ -19,6 +19,7 @@ export interface AvatarState {
   measurements: MeasurementState;
   physicsTier: PhysicsTier;
   garmentSelections: string[];
+  fitHistory: FitHistoryEntry[];
   setGender: (gender: Gender) => void;
   setPreset: (preset: BodyPreset) => void;
   setMeasurement: (key: MeasurementKey, value: number) => void;
@@ -26,12 +27,21 @@ export interface AvatarState {
   togglePhysicsTier: () => void;
   setPhysicsTier: (tier: PhysicsTier) => void;
   setGarmentSelections: (ids: string[]) => void;
+  appendFitHistory: (entry: FitHistoryEntry) => void;
+  clearFitHistory: () => void;
   resetAll: () => void;
+}
+
+export interface FitHistoryEntry {
+  timestamp: string;
+  garmentId: string;
+  tier: PhysicsTier;
+  message: string;
 }
 
 type PersistedAvatarState = Pick<
   AvatarState,
-  'gender' | 'preset' | 'measurements' | 'physicsTier' | 'garmentSelections'
+  'gender' | 'preset' | 'measurements' | 'physicsTier' | 'garmentSelections' | 'fitHistory'
 >;
 
 const definitionLookup: Record<MeasurementKey, MeasurementDefinition> = Object.fromEntries(
@@ -83,6 +93,7 @@ export const useAvatarStore = create<AvatarState>()(
       measurements: defaultMeasurements(),
       physicsTier: 'L0',
       garmentSelections: [],
+      fitHistory: [],
       setGender: (gender) => {
         set({ gender });
         const { preset } = get();
@@ -122,6 +133,12 @@ export const useAvatarStore = create<AvatarState>()(
         set({ physicsTier: tier });
       },
       setGarmentSelections: (ids) => set({ garmentSelections: ids }),
+      appendFitHistory: (entry) => {
+        set((state) => ({
+          fitHistory: [...state.fitHistory.slice(-49), entry],
+        }));
+      },
+      clearFitHistory: () => set({ fitHistory: [] }),
       resetAll: () => {
         set({
           gender: null,
@@ -129,6 +146,7 @@ export const useAvatarStore = create<AvatarState>()(
           measurements: defaultMeasurements(),
           garmentSelections: [],
           physicsTier: 'L0',
+          fitHistory: [],
         });
       },
     }),
@@ -142,6 +160,7 @@ export const useAvatarStore = create<AvatarState>()(
         measurements: state.measurements,
         physicsTier: state.physicsTier,
         garmentSelections: state.garmentSelections,
+        fitHistory: state.fitHistory,
       }),
       skipHydration: typeof window === 'undefined',
     },
@@ -158,3 +177,5 @@ export const useHydratedAvatarStore = (): AvatarState | null => {
 
   return state;
 };
+
+export const useFitHistory = () => useAvatarStore((state) => state.fitHistory);
