@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect, useMemo, useRef, type JSX } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './fit-view.module.css';
 import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
@@ -8,6 +8,7 @@ import type { AvatarRig } from '../engine/avatar/types';
 import { getGarmentCatalog } from '../data/garments';
 import { useAvatarStore } from '../store/avatar.store';
 import { applyGarmentL0 } from '../engine/fit/L0';
+import { applyGarmentL1 } from '../engine/fit/L1';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -26,6 +27,7 @@ export function FitView(): JSX.Element {
   const setGarmentSelections = useAvatarStore((state) => state.setGarmentSelections);
   const physicsTier = useAvatarStore((state) => state.physicsTier);
   const togglePhysicsTier = useAvatarStore((state) => state.togglePhysicsTier);
+  const setPhysicsTier = useAvatarStore((state) => state.setPhysicsTier);
 
   const catalog = useMemo(() => getGarmentCatalog(), []);
 
@@ -34,16 +36,47 @@ export function FitView(): JSX.Element {
     [catalog.items, garmentSelections],
   );
 
+  const [fitLogs, setFitLogs] = useState<string[]>([]);
+  const [autoDowngradeMessage, setAutoDowngradeMessage] = useState<string | null>(null);
+
   useEffect(() => {
     if (selectedGarments.length === 0) {
+      setFitLogs([]);
+      setAutoDowngradeMessage(null);
       return;
     }
 
+    const logs: string[] = [];
+    let downgraded = false;
+
     for (const garment of selectedGarments) {
-      const result = applyGarmentL0(rigRef.current, garment);
-      console.debug('[Garments:L0] result ->', result);
+      if (physicsTier === 'L1') {
+        const l1Result = applyGarmentL1(rigRef.current, garment);
+        logs.push(
+          `[L1] ${garment.id} | anchors=${l1Result.anchorsUsed.length} | latency=${l1Result.estimatedLatencyMs}ms | iter=${l1Result.solverIterations}`,
+        );
+        if (l1Result.degraded) {
+          downgraded = true;
+          const fallback = applyGarmentL0(rigRef.current, garment);
+          logs.push(`[L0] fallback ${garment.id} | latency=${fallback.estimatedLatencyMs}ms`);
+        }
+      } else {
+        const l0Result = applyGarmentL0(rigRef.current, garment);
+        logs.push(
+          `[L0] ${garment.id} | anchors=${l0Result.anchorsUsed.length} | latency=${l0Result.estimatedLatencyMs}ms`,
+        );
+      }
     }
-  }, [selectedGarments]);
+
+    if (downgraded && physicsTier === 'L1') {
+      setPhysicsTier('L0');
+      setAutoDowngradeMessage('물리 성능 저하 감지: 자동으로 L0 모드로 전환되었습니다.');
+    } else {
+      setAutoDowngradeMessage(null);
+    }
+
+    setFitLogs(logs);
+  }, [selectedGarments, physicsTier, setPhysicsTier]);
 
   useEffect(() => {
     if (!avatarParams) {
@@ -103,6 +136,12 @@ export function FitView(): JSX.Element {
               물리 티어 전환
             </button>
           </div>
+          {autoDowngradeMessage ? (
+            <div className={styles.warningCard}>
+              <strong>자동 강등</strong>
+              <p>{autoDowngradeMessage}</p>
+            </div>
+          ) : null}
           {formattedParams ? (
             <div className={styles.paramCard}>
               <p>
@@ -126,6 +165,16 @@ export function FitView(): JSX.Element {
               <ul>
                 {warnings.slice(0, 4).map((warning) => (
                   <li key={warning.key}>{warning.message}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {fitLogs.length > 0 ? (
+            <div className={styles.logCard}>
+              <strong>최근 피팅 로그</strong>
+              <ul>
+                {fitLogs.map((log) => (
+                  <li key={log}>{log}</li>
                 ))}
               </ul>
             </div>

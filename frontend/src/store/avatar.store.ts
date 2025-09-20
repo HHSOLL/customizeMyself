@@ -24,6 +24,7 @@ export interface AvatarState {
   setMeasurement: (key: MeasurementKey, value: number) => void;
   resetMeasurementsToPreset: () => void;
   togglePhysicsTier: () => void;
+  setPhysicsTier: (tier: PhysicsTier) => void;
   setGarmentSelections: (ids: string[]) => void;
   resetAll: () => void;
 }
@@ -116,6 +117,9 @@ export const useAvatarStore = create<AvatarState>()(
       },
       togglePhysicsTier: () => {
         set((state) => ({ physicsTier: state.physicsTier === 'L0' ? 'L1' : 'L0' }));
+      },
+      setPhysicsTier: (tier) => {
+        set({ physicsTier: tier });
       },
       setGarmentSelections: (ids) => set({ garmentSelections: ids }),
       resetAll: () => {

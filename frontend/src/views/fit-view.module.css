@@ -88,6 +88,23 @@
   gap: 0.5rem;
 }
 
+.logCard {
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(4, 7, 14, 0.88);
+  border: 1px solid rgba(93, 219, 154, 0.25);
+  display: grid;
+  gap: 0.4rem;
+  color: #d7f4ff;
+}
+
+.logCard ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: inherit;
+  font-size: 0.85rem;
+}
+
 .paramCard ul,
 .warningCard ul {
   margin: 0;
