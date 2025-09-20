@@ -54,8 +54,41 @@
   background: rgba(10, 14, 24, 0.92);
   border: 1px solid rgba(75, 140, 255, 0.18);
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
   color: #dde5ff;
+}
+
+.paramCard,
+.warningCard {
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(6, 9, 16, 0.9);
+  border: 1px solid rgba(75, 140, 255, 0.18);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.paramCard ul,
+.warningCard ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #c8d6ff;
+}
+
+.warningCard {
+  border-color: rgba(255, 168, 88, 0.6);
+  background: rgba(36, 20, 12, 0.92);
+  color: #ffd9b5;
+}
+
+.warningCard ul {
+  color: inherit;
+}
+
+.placeholder {
+  margin: 0;
+  color: #99a8cc;
+  font-size: 0.95rem;
 }
 
 .catalogBar {

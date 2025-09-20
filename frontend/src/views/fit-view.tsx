@@ -1,7 +1,10 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense, type JSX } from 'react';
+import { Suspense, useEffect, useMemo, useRef, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './fit-view.module.css';
+import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
+import { applyAvatarParams, createLoggingRig } from '../engine/avatar/applyAvatarParams';
+import type { AvatarRig } from '../engine/avatar/types';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -13,6 +16,35 @@ function PlaceholderAvatar(): JSX.Element {
 }
 
 export function FitView(): JSX.Element {
+  const rigRef = useRef<AvatarRig>(createLoggingRig());
+  const avatarParams = useAvatarParameters();
+  const warnings = useAvatarWarnings();
+
+  useEffect(() => {
+    if (!avatarParams) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      applyAvatarParams(rigRef.current, avatarParams);
+    }, 100);
+
+    return () => window.clearTimeout(timer);
+  }, [avatarParams]);
+
+  const formattedParams = useMemo(() => {
+    if (!avatarParams) {
+      return null;
+    }
+
+    return {
+      height: avatarParams.scale.height,
+      morphTargets: Object.entries(avatarParams.morphTargets)
+        .slice(0, 5)
+        .map(([name, value]) => `${name}: ${value}`),
+    };
+  }, [avatarParams]);
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
@@ -40,6 +72,33 @@ export function FitView(): JSX.Element {
         <aside className={styles.controlPanel}>
           <h2>치수 & 물리 옵션</h2>
           <p>치수 조정과 물리 레벨(L0/L1) 토글 UI가 여기에 들어갑니다.</p>
+          {formattedParams ? (
+            <div className={styles.paramCard}>
+              <p>
+                <strong>신장 배율</strong>: {formattedParams.height}
+              </p>
+              <p>
+                <strong>주요 모프</strong>
+              </p>
+              <ul>
+                {formattedParams.morphTargets.map((entry) => (
+                  <li key={entry}>{entry}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className={styles.placeholder}>온보딩을 완료하면 마네킹 파라미터가 표시됩니다.</p>
+          )}
+          {warnings.length > 0 ? (
+            <div className={styles.warningCard}>
+              <strong>치수 확인 필요</strong>
+              <ul>
+                {warnings.slice(0, 4).map((warning) => (
+                  <li key={warning.key}>{warning.message}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </aside>
       </main>
 
