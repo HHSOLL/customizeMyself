@@ -17,7 +17,8 @@ export class MeasurementsController {
   }
 
   @Post()
-  create(@Body() dto: CreateMeasurementDto) {
-    return this.measurementsService.create(dto);
+  async create(@Body() dto: CreateMeasurementDto) {
+    const result = await this.measurementsService.create(dto);
+    return { id: result.id };
   }
 }
