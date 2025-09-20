@@ -4,7 +4,9 @@ async function safeFetch(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init);
   if (!response.ok) {
     const text = await response.text().catch(() => '');
-    throw new Error(`Request failed with ${response.status}: ${text}`);
+    const error = new Error(`Request failed with ${response.status}: ${text}`);
+    (error as Error & { status?: number }).status = response.status;
+    throw error;
   }
   return response;
 }
@@ -74,10 +76,33 @@ export interface MeasurementPayload {
 }
 
 export async function createMeasurement(payload: MeasurementPayload): Promise<{ id: string }> {
-  const response = await safeFetch(`${API_BASE}/measurements`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  return response.json();
+  const fallback = () => {
+    const globalCrypto =
+      typeof globalThis !== 'undefined' ? (globalThis as { crypto?: Crypto }).crypto : undefined;
+    const generator =
+      globalCrypto && 'randomUUID' in globalCrypto
+        ? globalCrypto.randomUUID()
+        : Date.now().toString(36);
+    const id = `local-${generator}`;
+    console.warn('[api] measurements endpoint unavailable, using local profile id', id);
+    return { id };
+  };
+
+  try {
+    const response = await safeFetch(`${API_BASE}/measurements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return response.json();
+  } catch (error) {
+    const status =
+      typeof (error as { status?: number } | null)?.status === 'number'
+        ? (error as { status?: number }).status
+        : undefined;
+    if (status === undefined || status === 404 || status === 503) {
+      return fallback();
+    }
+    throw error;
+  }
 }
