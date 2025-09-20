@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useRef, useState, type JSX } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './fit-view.module.css';
 import { useAvatarParameters, useAvatarWarnings } from '../engine/avatar/useAvatarParams';
@@ -11,6 +11,9 @@ import { FitScene } from '../components/fitting/fit-scene';
 import { postFitHistory } from '../services/api';
 import { useGarmentCatalog } from '../hooks/useGarmentCatalog';
 import { GarmentPicker } from '../components/GarmentPicker';
+import fitCameraToObject from '../engine/scene/fitCamera';
+import type { Group, PerspectiveCamera } from 'three';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 function PlaceholderAvatar(): JSX.Element {
   return (
@@ -40,6 +43,36 @@ export function FitView(): JSX.Element {
   );
 
   const [autoDowngradeMessage, setAutoDowngradeMessage] = useState<string | null>(null);
+  const stageContainerRef = useRef<HTMLDivElement | null>(null);
+  const sceneContextRef = useRef<{
+    root: Group | null;
+    camera: PerspectiveCamera | null;
+    controls: OrbitControlsImpl | null;
+  }>({
+    root: null,
+    camera: null,
+    controls: null,
+  });
+
+  const focusScene = useCallback(() => {
+    const context = sceneContextRef.current;
+    if (!context.root || !context.camera) {
+      return;
+    }
+    fitCameraToObject(context.camera, context.controls, context.root);
+  }, []);
+
+  const handleSceneReady = useCallback(
+    (payload: { root: Group; camera: PerspectiveCamera; controls: OrbitControlsImpl | null }) => {
+      sceneContextRef.current = payload;
+      focusScene();
+    },
+    [focusScene],
+  );
+
+  const handleContentChanged = useCallback(() => {
+    focusScene();
+  }, [focusScene]);
 
   useEffect(() => {
     if (selectedGarments.length === 0) {
@@ -138,6 +171,12 @@ export function FitView(): JSX.Element {
     return () => window.clearTimeout(timer);
   }, [avatarParams]);
 
+  useEffect(() => {
+    const listener = () => focusScene();
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [focusScene]);
+
   const formattedParams = useMemo(() => {
     if (!avatarParams) {
       return null;
@@ -166,9 +205,15 @@ export function FitView(): JSX.Element {
       <div className={styles.content}>
         <div className={styles.mainGrid}>
           <section className={styles.stagePanel}>
-            <div className={styles.stageViewport}>
+            <div ref={stageContainerRef} className={styles.stageViewport}>
               <Suspense fallback={<PlaceholderAvatar />}>
-                <FitScene garmentIds={garmentSelections} catalog={catalog} />
+                <FitScene
+                  garmentIds={garmentSelections}
+                  catalog={catalog}
+                  containerRef={stageContainerRef}
+                  onSceneReady={handleSceneReady}
+                  onContentChanged={handleContentChanged}
+                />
               </Suspense>
             </div>
           </section>

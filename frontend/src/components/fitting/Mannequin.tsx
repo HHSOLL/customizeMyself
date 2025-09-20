@@ -9,7 +9,7 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { Group as ThreeGroup, Object3D } from 'three';
-import { useAvatarStore } from '../../store/avatar.store';
+import { useAvatarStore, type AvatarState } from '../../store/avatar.store';
 
 type MannequinProps = {
   onLoaded?: (group: ThreeGroup) => void;
@@ -32,9 +32,7 @@ const createPlaceholder = () => {
   return group;
 };
 
-const createProceduralMannequin = (
-  measurements: ReturnType<typeof useAvatarStore>['measurements'],
-) => {
+const createProceduralMannequin = (measurements: AvatarState['measurements']) => {
   const root = new Group();
   root.name = 'mannequin-generated';
 

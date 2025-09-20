@@ -6,6 +6,7 @@ import type { GarmentItem } from '../../data/garments';
 
 interface GarmentModelProps {
   garment: GarmentItem;
+  onLoaded?: (group: Group) => void;
 }
 
 const createPlaceholder = () => {
@@ -16,7 +17,7 @@ const createPlaceholder = () => {
   return group;
 };
 
-export const GarmentModel = memo(({ garment }: GarmentModelProps) => {
+export const GarmentModel = memo(({ garment, onLoaded }: GarmentModelProps) => {
   const [group, setGroup] = useState<Group | null>(null);
 
   const placeholder = useMemo(() => createPlaceholder(), []);
@@ -33,6 +34,7 @@ export const GarmentModel = memo(({ garment }: GarmentModelProps) => {
       }
       const scene = loaded.scene ? loaded.scene.clone(true) : placeholder.clone();
       setGroup(scene);
+      onLoaded?.(scene);
     };
 
     const handleError = (error: unknown) => {
@@ -42,6 +44,7 @@ export const GarmentModel = memo(({ garment }: GarmentModelProps) => {
       console.warn('asset load failed:', garment.asset, error);
       const fallback = placeholder.clone();
       setGroup(fallback);
+      onLoaded?.(fallback);
     };
 
     setGroup(placeholder.clone());
@@ -50,7 +53,7 @@ export const GarmentModel = memo(({ garment }: GarmentModelProps) => {
     return () => {
       disposed = true;
     };
-  }, [garment.asset, placeholder, garment.id]);
+  }, [garment.asset, placeholder, garment.id, onLoaded]);
 
   if (!group) {
     return null;
