@@ -256,6 +256,8 @@ export function FitView(): JSX.Element {
         <div className={styles.catalogGrid}>
           {catalog.items.map((item) => {
             const isSelected = garmentSelections.includes(item.id);
+            const anchors = item.anchors ?? [];
+            const displayLabel = item.name ?? item.label ?? item.id;
             return (
               <button
                 key={item.id}
@@ -273,11 +275,11 @@ export function FitView(): JSX.Element {
                   <span>{item.category === 'top' ? '상의' : '하의'}</span>
                 </div>
                 <div className={styles.catalogDetails}>
-                  <strong>{item.label}</strong>
+                  <strong>{displayLabel}</strong>
                   <p>{item.license?.author ?? 'Unknown'}</p>
                   {isSelected ? (
                     <ul>
-                      {item.anchors.map((anchor) => (
+                      {anchors.map((anchor) => (
                         <li key={anchor}>{anchor}</li>
                       ))}
                     </ul>

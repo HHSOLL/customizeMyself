@@ -8,6 +8,8 @@ const fallbackCatalog = getGarmentCatalog();
 const normalizeItems = (items: GarmentItem[]): GarmentItem[] =>
   items.map((item) => ({
     ...item,
+    name: item.name ?? item.label ?? item.id,
+    label: item.label ?? item.name ?? item.id,
     anchors: item.anchors ?? [],
     anchorMeta: item.anchorMeta ?? null,
     thumbnail: item.thumbnail ?? null,
